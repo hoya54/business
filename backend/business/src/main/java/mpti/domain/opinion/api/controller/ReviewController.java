@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/opinion")
+@RequestMapping("/api/business/opinion")
 @RequiredArgsConstructor
 public class ReviewController {
 

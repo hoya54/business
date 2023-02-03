@@ -15,7 +15,7 @@ import java.util.Optional;
 
 
 @RestController
-@RequestMapping("/api/reservation")
+@RequestMapping("/api/business/reservation")
 @RequiredArgsConstructor
 public class ReservationController {
 

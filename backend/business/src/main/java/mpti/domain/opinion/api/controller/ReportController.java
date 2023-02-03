@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/opinion")
+@RequestMapping("/api/business/opinion")
 @RequiredArgsConstructor
 public class ReportController {
 
@@ -23,7 +23,7 @@ public class ReportController {
 
 
     // [GET] 현재 모든 신고 리스트 반환
-    // Pageable 
+    // Pageable
 
     @GetMapping("/report/list")
     public ResponseEntity<List<GetReportResponse>> getReportList() {
