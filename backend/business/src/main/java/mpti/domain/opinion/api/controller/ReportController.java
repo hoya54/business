@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/opinion")
+@RequestMapping("/api/opinion")
 @RequiredArgsConstructor
 public class ReportController {
 
