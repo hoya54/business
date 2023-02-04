@@ -30,7 +30,7 @@ public class ReviewService {
     }
 
     public List<GetReviewResponse> getTrainerReviewList(Long trainerId) {
-        List<Review> reviewList = reviewRepository.findAllByTrainerId(trainerId);
+        List<Review> reviewList = reviewRepository.findAllByTargetId(trainerId);
 
         List<GetReviewResponse> getReviewResponse = reviewList.stream()
                 .map((review) -> new GetReviewResponse(review))
