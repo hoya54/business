@@ -5,6 +5,7 @@ import mpti.domain.reservation.api.request.CancelRequest;
 import mpti.domain.reservation.api.request.MakeReservationRequest;
 import mpti.domain.reservation.api.request.SchedulingRequest;
 import mpti.domain.reservation.api.response.GetReservationResponse;
+import mpti.domain.reservation.api.response.GetTrainerIdListResponse;
 import mpti.domain.reservation.api.response.MakeReservationResponse;
 import mpti.domain.reservation.application.ReservationService;
 import mpti.domain.reservation.dto.ReservationDto;
@@ -79,6 +80,15 @@ public class ReservationController {
         return ResponseEntity.ok(reservationDto);
     }
 
+
+//    [GET] 회원이 본인이 예약한 모든 트레이너 id 조회
+    @GetMapping("/trainer/list/{userId}")
+    public ResponseEntity<List<GetTrainerIdListResponse>> getTrainerIdList(@PathVariable Long userId){
+
+        List<GetTrainerIdListResponse> trainerIdList = reservationService.getTrainerIdList(userId);
+
+        return ResponseEntity.ok(trainerIdList);
+    }
 
 
 }

@@ -8,6 +8,7 @@ import mpti.domain.reservation.api.request.CancelRequest;
 import mpti.domain.reservation.api.request.MakeReservationRequest;
 import mpti.domain.reservation.api.request.SchedulingRequest;
 import mpti.domain.reservation.api.response.GetReservationResponse;
+import mpti.domain.reservation.api.response.GetTrainerIdListResponse;
 import mpti.domain.reservation.dao.ReservationRepository;
 import mpti.domain.reservation.dto.ReservationDto;
 import mpti.domain.reservation.entity.Reservation;
@@ -134,5 +135,17 @@ public class ReservationService {
                 openReservation(reservation);
             }
         }
+    }
+
+    public List<GetTrainerIdListResponse> getTrainerIdList(Long userId) {
+        List<Reservation> reservations = reservationRepository.findAllDistinctByUserId(userId);
+
+        List<GetTrainerIdListResponse> getTrainerIdListResponseList = new ArrayList<>();
+
+        for(Reservation reservation : reservations){
+            getTrainerIdListResponseList.add(new GetTrainerIdListResponse(reservation.getTrainerId()));
+        }
+
+        return getTrainerIdListResponseList;
     }
 }
