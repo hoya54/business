@@ -51,6 +51,8 @@ public class ReportService {
         Report report = new Report();
         report.setWriterId(createReportRequest.getWriterId());
         report.setTargetId(createReportRequest.getTargetId());
+        report.setWriterName(createReportRequest.getWriterName());
+        report.setTargetName(createReportRequest.getTargetName());
         report.setMemo(createReportRequest.getMemo());
         if(writerRole.equals(Role.USER)){
             report.setTargetRole(Role.TRAINER);

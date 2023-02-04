@@ -9,6 +9,10 @@ public class CreateReportRequest {
 
     private Long targetId;
 
+    private String writerName;
+
+    private String targetName;
+
     private String reportType;
 
     private String memo;
