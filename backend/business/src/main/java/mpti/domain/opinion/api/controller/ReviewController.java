@@ -29,6 +29,17 @@ public class ReviewController {
         return ResponseEntity.ok(getReviewResponseList);
     }
 
+    // [GET] 특정 트레이너의 리뷰 리스트 조회
+    // Pageable
+
+    @GetMapping("/review/trainer/list/{trainerId}")
+    public ResponseEntity<List<GetReviewResponse>> getTrainerReviewList(@PathVariable Long trainerId) {
+
+        List<GetReviewResponse> getReviewResponseList = reviewService.getTrainerReviewList(trainerId);
+
+        return ResponseEntity.ok(getReviewResponseList);
+    }
+
     // [GET] 특정 회원이 작성한 리뷰 리스트 반환
     // Pageable
 

@@ -14,6 +14,10 @@ public class GetReportResponse {
 
     private Long targetId;
 
+    private String writerName;
+
+    private String targetName;
+
     private String reportType;
 
     private String memo;
@@ -26,6 +30,8 @@ public class GetReportResponse {
         this.id = report.getId();
         this.writerId = report.getWriterId();
         this.targetId = report.getTargetId();
+        this.writerName = report.getWriterName();
+        this.targetName = report.getTargetName();
         this.reportType = report.getReportType();
         this.memo = report.getMemo();
         this.createdAt = report.getCreatedAt();

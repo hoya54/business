@@ -1,5 +1,6 @@
 package mpti.domain.opinion.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;
@@ -11,4 +12,5 @@ import javax.persistence.*;
 public class Review extends Opinion{
 
     private Double star;
+
 }

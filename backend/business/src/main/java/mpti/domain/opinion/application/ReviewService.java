@@ -29,6 +29,15 @@ public class ReviewService {
         return getReviewResponse;
     }
 
+    public List<GetReviewResponse> getTrainerReviewList(Long trainerId) {
+        List<Review> reviewList = reviewRepository.findAllByTrainerId(trainerId);
+
+        List<GetReviewResponse> getReviewResponse = reviewList.stream()
+                .map((review) -> new GetReviewResponse(review))
+                .collect(Collectors.toList());
+        return getReviewResponse;
+    }
+
     public List<GetReviewResponse> getReviewListByWriterId(Long writerId) {
         List<Review> reviewList = reviewRepository.findByWriterId(writerId);
 
@@ -42,6 +51,8 @@ public class ReviewService {
         Review review = new Review();
         review.setWriterId(createReviewRequest.getWriterId());
         review.setTargetId(createReviewRequest.getTargetId());
+        review.setWriterName(createReviewRequest.getWriterName());
+        review.setTargetName(createReviewRequest.getTargetName());
         review.setStar(createReviewRequest.getStar());
         review.setMemo(createReviewRequest.getMemo());
 
@@ -60,5 +71,6 @@ public class ReviewService {
 
         return getReviewResponse;
     }
+
 
 }

@@ -1,5 +1,6 @@
 package mpti.domain.opinion.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -24,10 +25,16 @@ public abstract class Opinion {
     private Long writerId;
     private Long targetId;
 
+    private String writerName;
+    private String targetName;
+
     @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     private String memo;
 
+    public Opinion() {
+
+    }
 }
