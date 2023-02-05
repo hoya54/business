@@ -66,7 +66,6 @@ public class ReservationController {
     }
 
 //    [POST] 트레이너가 가능한 시간대를 선택 및 수정(회원이 이미 신청한 시간대는 변경 불가)
-
     @PostMapping("/scheduling")
     public ResponseEntity<String> scheduling(@RequestBody SchedulingRequest schedulingRequest) throws IOException {
 
@@ -77,7 +76,7 @@ public class ReservationController {
 
 
 //    [POST] 회원이 본인의 예약 취소
-//    본인이 예약한 스케줄이 아닌 것을 취소 시도한 경우
+//    예외 : 본인이 예약한 스케줄이 아닌 것을 취소 시도한 경우
 
     @PostMapping("/cancel")
     public ResponseEntity<Optional<ReservationDto>> cancel(@RequestBody CancelRequest cancelRequest){

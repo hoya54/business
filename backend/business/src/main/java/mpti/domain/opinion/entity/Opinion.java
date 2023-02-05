@@ -23,9 +23,9 @@ public abstract class Opinion {
     private Long id;
 
     private Long writerId;
-    private Long targetId;
-
     private String writerName;
+
+    private Long targetId;
     private String targetName;
 
     @CreatedDate
@@ -36,5 +36,13 @@ public abstract class Opinion {
 
     public Opinion() {
 
+    }
+
+    public Opinion(Long writerId, Long targetId, String writerName, String targetName, String memo) {
+        this.writerId = writerId;
+        this.targetId = targetId;
+        this.writerName = writerName;
+        this.targetName = targetName;
+        this.memo = memo;
     }
 }

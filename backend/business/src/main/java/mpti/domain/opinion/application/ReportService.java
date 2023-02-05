@@ -2,6 +2,7 @@ package mpti.domain.opinion.application;
 
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
+import mpti.common.errors.ReportNotFoundException;
 import mpti.domain.opinion.api.request.CreateReportRequest;
 import mpti.domain.opinion.api.request.ProcessReportRequest;
 import mpti.domain.opinion.api.request.ProcessRequest;
@@ -48,17 +49,16 @@ public class ReportService {
         Role writerRole = Role.USER;
 
 
-        Report report = new Report();
-        report.setWriterId(createReportRequest.getWriterId());
-        report.setTargetId(createReportRequest.getTargetId());
-        report.setWriterName(createReportRequest.getWriterName());
-        report.setTargetName(createReportRequest.getTargetName());
-        report.setMemo(createReportRequest.getMemo());
-        if(writerRole.equals(Role.USER)){
-            report.setTargetRole(Role.TRAINER);
-        }else{
-            report.setTargetRole(Role.USER);
-        }
+        Report report = Report.builder()
+                .writerId(createReportRequest.getWriterId())
+                .writerName(createReportRequest.getWriterName())
+                .targetId(createReportRequest.getTargetId())
+                .targetName(createReportRequest.getTargetName())
+                .memo(createReportRequest.getMemo())
+                .reportType(createReportRequest.getReportType())
+                .targetRole(writerRole.equals(Role.USER) ? Role.TRAINER : Role.USER)
+                .build();
+
 
         // report 를 만드는 시점에는 정지일이 정해지지 않음.. 추후 관리자에의해 처리됨
 
@@ -70,16 +70,15 @@ public class ReportService {
 
 
     public Optional<GetReportResponse> getReport(Long id) {
-        Optional<Report> report = get(id);
+        Report report = get(id);
 
-        Optional<GetReportResponse> getReportResponse = Optional.of(new GetReportResponse(report.orElseThrow()));
+        Optional<GetReportResponse> getReportResponse = Optional.of(new GetReportResponse(report));
 
         return getReportResponse;
     }
 
     public Optional<ProcessReportResponse> process(ProcessReportRequest processReportRequest) throws IOException {
-        Optional<Report> optionalReport = get(processReportRequest.getId());
-        Report report = optionalReport.orElseThrow();
+        Report report = get(processReportRequest.getId());
 
         report.setStopUntil(processReportRequest.getBlockPeriod());
 
@@ -135,8 +134,8 @@ public class ReportService {
         return Optional.of(processReportResponse);
     }
 
-    public Optional<Report> get(Long id){
-        Optional<Report> report = reportRepository.findById(id);
+    public Report get(Long id){
+        Report report = reportRepository.findById(id).orElseThrow(() -> new ReportNotFoundException(id));
         return report;
     }
 }

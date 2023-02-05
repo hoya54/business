@@ -1,8 +1,6 @@
 package mpti.domain.opinion.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -25,4 +23,14 @@ public class Report extends Opinion{
     }
 
 
+    public Report() {
+    }
+
+    @Builder
+    public Report(Long writerId, Long targetId, String writerName, String targetName, String memo, String reportType, Role targetRole, LocalDateTime stopUntil) {
+        super(writerId, targetId, writerName, targetName, memo);
+        this.reportType = reportType;
+        this.targetRole = targetRole;
+        this.stopUntil = stopUntil;
+    }
 }
