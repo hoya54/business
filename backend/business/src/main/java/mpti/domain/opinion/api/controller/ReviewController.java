@@ -42,7 +42,7 @@ public class ReviewController {
 
     // [GET] 특정 회원이 작성한 리뷰 리스트 반환
     // Pageable
-
+    // 예외 : 해당 회원id가 존재하지 않는 경우
     @GetMapping("/review/list/{writerId}")
     public ResponseEntity<List<GetReviewResponse>> getReviewListByWriterId(@PathVariable Long writerId) {
 
@@ -52,6 +52,7 @@ public class ReviewController {
     }
 
     // [GET] 리뷰 상세 정보 반환
+    // 예외 : 해당 id의 리뷰가 없는 경우
     @GetMapping("/review/{reviewId}")
     public ResponseEntity<Optional<GetReviewResponse>> getReview(@PathVariable Long reviewId) {
 

@@ -10,6 +10,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     List<Reservation> findAllByTrainerIdAndYearAndMonthAndDay(Long trainerId, int year, int month, int day);
 
+    List<Reservation> findByUserId(Long userId);
 
-    List<Reservation> findAllDistinctByUserId(Long userId);
+    List<Reservation> findByTrainerId(Long trainerId);
 }

@@ -28,7 +28,7 @@ public class ReportService {
     private final ReportRepository reportRepository;
 
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
-    private OkHttpClient client;
+    private OkHttpClient client = new OkHttpClient();
     private final Gson gson;
 
 
@@ -101,7 +101,7 @@ public class ReportService {
         String json = gson.toJson(processRequest);
 
         // RequestBody에 JSON 탑재
-        RequestBody body = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
+        RequestBody body = RequestBody.create(json, JSON);
 
         Request request;
         // request 설정
@@ -128,7 +128,6 @@ public class ReportService {
             if (!response.isSuccessful()){
                 System.out.println("응답 실패");
             }else{
-
                 return Optional.of(processReportResponse);
             }
         }

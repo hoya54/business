@@ -1,23 +1,24 @@
 package mpti.domain.reservation.application;
 
+import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 //import mpti.domain.business.api.response.ReservationDto;
-import mpti.domain.opinion.api.response.GetReportResponse;
-import mpti.domain.opinion.entity.Report;
+import mpti.domain.opinion.api.request.GetTrainerNameRequest;
+import mpti.domain.opinion.entity.Role;
 import mpti.domain.reservation.api.request.CancelRequest;
 import mpti.domain.reservation.api.request.MakeReservationRequest;
 import mpti.domain.reservation.api.request.SchedulingRequest;
 import mpti.domain.reservation.api.response.GetReservationResponse;
-import mpti.domain.reservation.api.response.GetTrainerIdListResponse;
+import mpti.domain.reservation.api.response.GetIdListResponse;
 import mpti.domain.reservation.dao.ReservationRepository;
 import mpti.domain.reservation.dto.ReservationDto;
 import mpti.domain.reservation.entity.Reservation;
+import okhttp3.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.io.IOException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +27,11 @@ import java.util.stream.Collectors;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
+
+    public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
+    private OkHttpClient client = new OkHttpClient();
+    private final Gson gson;
+
 
     public List<GetReservationResponse> getReservationList() {
         List<Reservation> reservationList = reservationRepository.findAll();
@@ -71,9 +77,10 @@ public class ReservationService {
         // 요청한 유저아이디와 예약된 유저아이디가 같아야지만 예약 취소 가능
         if(reservation.orElseThrow().getUserId() == cancelRequest.getUserId()){
             reservation.orElseThrow().cancel();
+            return Optional.of(new ReservationDto(reservation));
         }
 
-        return Optional.of(new ReservationDto(reservation));
+        return Optional.of(new ReservationDto());
     }
 
     public void deleteReservation(Reservation reservation){
@@ -84,7 +91,7 @@ public class ReservationService {
         reservationRepository.save(reservation);
     }
 
-    public void scheduling(SchedulingRequest schedulingRequest){
+    public void scheduling(SchedulingRequest schedulingRequest) throws IOException {
         // 트레이너의 특정 날짜의 스케쥴을 불러온다.
         List<Reservation> reservationList = reservationRepository.findAllByTrainerIdAndYearAndMonthAndDay(
                 schedulingRequest.getTrainerId(),
@@ -126,6 +133,8 @@ public class ReservationService {
             int targetHour = schedulingRequest.getOpenHours().get(i);
 
             if(!original.contains(targetHour)){
+                String trainerName = getTrainerName(schedulingRequest.getTrainerId());
+
                 Reservation reservation = new Reservation(
                         schedulingRequest.getTrainerId(),
                         schedulingRequest.getYear(),
@@ -137,15 +146,60 @@ public class ReservationService {
         }
     }
 
-    public List<GetTrainerIdListResponse> getTrainerIdList(Long userId) {
-        List<Reservation> reservations = reservationRepository.findAllDistinctByUserId(userId);
+    public Set<GetIdListResponse> getIdList(Long id, Role role) {
 
-        List<GetTrainerIdListResponse> getTrainerIdListResponseList = new ArrayList<>();
+        List<Reservation> reservations;
+        Set<GetIdListResponse> getIdListResponseList = new HashSet<>();
 
-        for(Reservation reservation : reservations){
-            getTrainerIdListResponseList.add(new GetTrainerIdListResponse(reservation.getTrainerId()));
+        if(role.equals(Role.USER)){
+            reservations = reservationRepository.findByUserId(id);
+            for(Reservation reservation : reservations){
+                Long trainerId = reservation.getTrainerId();
+                if(trainerId != null){
+                    getIdListResponseList.add(new GetIdListResponse(trainerId));
+                }
+            }
+        }else {
+            reservations = reservationRepository.findByTrainerId(id);
+            for(Reservation reservation : reservations){
+                Long userId = reservation.getUserId();
+                if(userId != null){
+                    getIdListResponseList.add(new GetIdListResponse(userId));
+                }
+            }
         }
 
-        return getTrainerIdListResponseList;
+        return getIdListResponseList;
+    }
+
+    public String getTrainerName(Long trainerId) throws IOException {
+
+        GetTrainerNameRequest getTrainerNameRequest = new GetTrainerNameRequest(trainerId);
+
+        // DTO를 JSON으로 변환
+        String json = gson.toJson(getTrainerNameRequest);
+
+        // RequestBody에 JSON 탑재
+        RequestBody body = RequestBody.create(json, JSON);
+
+        Request request = new Request.Builder()
+                // localhost 대신에 컨테이너 이름으로도 가능
+                .url("http://trainer:8002/member")
+                .post(body)
+                .build();
+
+        // request 요청
+        try (Response response = client.newCall(request).execute()) {
+
+            // 요청 실패
+            if (!response.isSuccessful()){
+                System.out.println("응답 실패");
+                return null;
+            }else{
+
+                return response.body().string();
+            }
+        }
+
     }
 }

@@ -44,6 +44,7 @@ public class ReportController {
     }
 
     // [GET] 신고 상세 정보 반환
+    // 예외 : 해당 id의 신고 내역이 없는 경우
 
     @GetMapping("/report/{id}")
     public ResponseEntity<Optional<GetReportResponse>> getReport(@PathVariable Long id) {
@@ -54,7 +55,7 @@ public class ReportController {
     }
 
     // [GET] 신고 내역 처리
-
+    // 예외 : 해당 id의 신고 내역이 없는 경우
     @PostMapping("/report/process")
     public ResponseEntity<Optional<ProcessReportResponse>> processReport(@RequestBody ProcessReportRequest processReportRequest) throws IOException {
 

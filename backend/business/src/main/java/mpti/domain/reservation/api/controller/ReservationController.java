@@ -1,18 +1,22 @@
 package mpti.domain.reservation.api.controller;
 
 import lombok.RequiredArgsConstructor;
+import mpti.domain.opinion.entity.Role;
 import mpti.domain.reservation.api.request.CancelRequest;
 import mpti.domain.reservation.api.request.MakeReservationRequest;
 import mpti.domain.reservation.api.request.SchedulingRequest;
 import mpti.domain.reservation.api.response.GetReservationResponse;
-import mpti.domain.reservation.api.response.GetTrainerIdListResponse;
+import mpti.domain.reservation.api.response.GetIdListResponse;
 import mpti.domain.reservation.api.response.MakeReservationResponse;
 import mpti.domain.reservation.application.ReservationService;
 import mpti.domain.reservation.dto.ReservationDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 
 @RestController
@@ -51,6 +55,7 @@ public class ReservationController {
 
 
     // [POST] 회원이 열려있는 예약중 특정한 하나를 예약
+    // 예외 : 이미 예약된 스케쥴에 예약을 시도한 경우
 
     @PostMapping("/reserve")
     public ResponseEntity<Optional<MakeReservationResponse>> makeReservation(@RequestBody MakeReservationRequest makeReservationRequest){
@@ -63,7 +68,7 @@ public class ReservationController {
 //    [POST] 트레이너가 가능한 시간대를 선택 및 수정(회원이 이미 신청한 시간대는 변경 불가)
 
     @PostMapping("/scheduling")
-    public ResponseEntity scheduling(@RequestBody SchedulingRequest schedulingRequest){
+    public ResponseEntity<String> scheduling(@RequestBody SchedulingRequest schedulingRequest) throws IOException {
 
         reservationService.scheduling(schedulingRequest);
 
@@ -72,6 +77,8 @@ public class ReservationController {
 
 
 //    [POST] 회원이 본인의 예약 취소
+//    본인이 예약한 스케줄이 아닌 것을 취소 시도한 경우
+
     @PostMapping("/cancel")
     public ResponseEntity<Optional<ReservationDto>> cancel(@RequestBody CancelRequest cancelRequest){
 
@@ -82,10 +89,10 @@ public class ReservationController {
 
 
 //    [GET] 회원이 본인이 예약한 모든 트레이너 id 조회
-    @GetMapping("/trainer/list/{userId}")
-    public ResponseEntity<List<GetTrainerIdListResponse>> getTrainerIdList(@PathVariable Long userId){
+    @GetMapping("/id/list/{id}/{role}")
+    public ResponseEntity<Set<GetIdListResponse>> getIdList(@PathVariable Long id, @PathVariable Role role){
 
-        List<GetTrainerIdListResponse> trainerIdList = reservationService.getTrainerIdList(userId);
+        Set<GetIdListResponse> trainerIdList = reservationService.getIdList(id, role);
 
         return ResponseEntity.ok(trainerIdList);
     }
