@@ -1,5 +1,6 @@
 package mpti.domain.reservation.api.request;
 
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -18,4 +19,12 @@ public class SchedulingRequest {
 
     private List<Integer> openHours;
 
+    @Builder
+    public SchedulingRequest(Long trainerId, int year, int month, int day, List<Integer> openHours) {
+        this.trainerId = trainerId;
+        this.year = year;
+        this.month = month;
+        this.day = day;
+        this.openHours = openHours;
+    }
 }

@@ -1,6 +1,7 @@
 package mpti.common;
 
 import mpti.common.errors.ReportNotFoundException;
+import mpti.common.errors.ReservationNotFoundException;
 import mpti.common.errors.ReviewNotFoundException;
 import mpti.common.errors.ServerCommunicationException;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,13 @@ public class ControllerErrorAdvice {
     public ErrorResponse handleReviewNotFoundException(){
         return new ErrorResponse("해당 리뷰가 없습니다.");
     }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(ReservationNotFoundException.class)
+    public ErrorResponse handleReservationNotFoundException(){
+        return new ErrorResponse("해당 스케줄이 없습니다.");
+    }
+
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(ServerCommunicationException.class)

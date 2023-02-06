@@ -10,6 +10,7 @@ import mpti.domain.reservation.api.response.GetIdListResponse;
 import mpti.domain.reservation.api.response.MakeReservationResponse;
 import mpti.domain.reservation.application.ReservationService;
 import mpti.domain.reservation.dto.ReservationDto;
+import mpti.domain.reservation.entity.Reservation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -94,6 +95,14 @@ public class ReservationController {
         Set<GetIdListResponse> trainerIdList = reservationService.getIdList(id, role);
 
         return ResponseEntity.ok(trainerIdList);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<GetReservationResponse> getReservation(@PathVariable Long id){
+
+        Reservation reservation = reservationService.get(id);
+
+        return ResponseEntity.ok(new GetReservationResponse(reservation));
     }
 
 

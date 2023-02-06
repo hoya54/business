@@ -25,17 +25,16 @@ public class ReservationDto {
     public ReservationDto() {
     }
 
-    public ReservationDto(Optional<Reservation> reservation) {
-        Reservation tempReservation = reservation.orElseThrow();
+    public ReservationDto(Reservation reservation) {
 
-        this.id = tempReservation.getId();
-        this.trainerId = tempReservation.getTrainerId();
-        this.userId = tempReservation.getUserId();
-        this.year = tempReservation.getYear();
-        this.month = tempReservation.getMonth();
-        this.day = tempReservation.getDay();
-        this.hour = tempReservation.getHour();
-        this.sessionId = tempReservation.getSessionId();
-        this.createdAt = reservation.orElseThrow().getCreatedAt();
+        this.id = reservation.getId();
+        this.trainerId = reservation.getTrainerId();
+        this.userId = reservation.getUserId();
+        this.year = reservation.getYear();
+        this.month = reservation.getMonth();
+        this.day = reservation.getDay();
+        this.hour = reservation.getHour();
+        this.sessionId = reservation.getSessionId();
+        this.createdAt = reservation.getCreatedAt();
     }
 }

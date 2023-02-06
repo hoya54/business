@@ -1,7 +1,10 @@
 package mpti.domain.reservation.application;
 
+import mpti.common.errors.ReservationNotFoundException;
 import mpti.domain.opinion.entity.Review;
 import mpti.domain.reservation.api.request.SchedulingRequest;
+import mpti.domain.reservation.api.response.GetTrainerNameResponse;
+import mpti.domain.reservation.api.response.GetUserNameResponse;
 import mpti.domain.reservation.dao.ReservationRepository;
 import mpti.domain.reservation.entity.Reservation;
 import org.junit.jupiter.api.DisplayName;
@@ -9,10 +12,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -94,32 +101,71 @@ class ReservationServiceTest {
 
 
     @Test
-    @DisplayName("스케줄 수정")
-    void scheduling() throws IOException {
-        // 있던 스케줄 삭제 case 1 : 아무도 예약하지 않은 스케줄 -> 삭제 불가
+    @DisplayName("스케줄 수정(예약되지 않은 스케줄 삭제)")
+    void schedulingDelete() throws IOException {
+        // 있던 스케줄 삭제 case 1 : 아무도 예약하지 않은 스케줄 -> 삭제
         Reservation reservationAt9 = createSampleReservation(9);
         Reservation savedReservation = reservationRepository.save(reservationAt9);
 
-        reservationService.scheduling(new SchedulingRequest());
+        List<Integer> openHours = new ArrayList<>();
+        openHours.add(10);
+
+        reservationService.scheduling(SchedulingRequest.builder()
+                        .trainerId(1L)
+                        .year(2022)
+                        .month(2)
+                        .day(2)
+                        .openHours(openHours)
+                        .build());
+
+        assertThatThrownBy(() -> reservationRepository.findById(savedReservation.getId()).orElseThrow(() -> new ReservationNotFoundException(savedReservation.getId())))
+                .isInstanceOf(ReservationNotFoundException.class);
 
 
 
 
-        // 있던 스케줄 삭제 case 2 : 회원이 이미 예약한 스케줄 -> 삭제
+    }
+
+    @Test
+    @DisplayName("스케줄 수정(예약된 스케줄 삭제 불가)")
+    void schedulingNoDelete() throws IOException {
+        // 있던 스케줄 삭제 case 2 : 회원이 이미 예약한 스케줄 -> 삭제 불가
+        Reservation reservationAt9 = createSampleReservation(9);
+        Reservation savedReservation = reservationRepository.save(reservationAt9);
+
+        List<Integer> openHours = new ArrayList<>();
+        openHours.add(10);
+
+        reservationService.scheduling(SchedulingRequest.builder()
+                .trainerId(1L)
+                .year(2022)
+                .month(2)
+                .day(2)
+                .openHours(openHours)
+                .build());
+
+        assertThatThrownBy(() -> reservationRepository.findById(savedReservation.getId()).orElseThrow(() -> new ReservationNotFoundException(savedReservation.getId())))
+                .isInstanceOf(ReservationNotFoundException.class);
+
+
+        // 있던 스케줄 삭제 case 2 : 회원이 이미 예약한 스케줄 -> 삭제 불가
+
     }
 
     @Test
     @DisplayName("트레이너 이름 불러오기")
     void getTrainerName() throws IOException {
-        String trainerName = reservationService.getTrainerName(1L);
-        System.out.println("trainerName = " + trainerName);
+        GetTrainerNameResponse trainerName = reservationService.getTrainerName(1L);
+        System.out.println("trainerName = " + trainerName.getName());
+        assertThat(trainerName).isNotNull();
     }
 
     @Test
     @DisplayName("회원 이름 불러오기")
     void getUserName() throws IOException {
-        String userName = reservationService.getUserName(1L);
-        System.out.println("userName = " + userName);
+        GetUserNameResponse userName = reservationService.getUserName(1L);
+        System.out.println("userName = " + userName.getName());
+        assertThat(userName).isNotNull();
     }
 
     Reservation createSampleReservation(int hour){
