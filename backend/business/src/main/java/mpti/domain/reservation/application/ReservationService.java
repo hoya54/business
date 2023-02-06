@@ -63,12 +63,13 @@ public class ReservationService {
         return reservationRepository.findById(id).orElseThrow(() ->new ReservationNotFoundException(id));
     }
 
-    public Optional<ReservationDto> makeReservation(MakeReservationRequest makeReservationRequest) {
+    public Optional<ReservationDto> makeReservation(MakeReservationRequest makeReservationRequest) throws IOException {
         Reservation reservation = get(makeReservationRequest.getId());
 
         // 기존에 예약되지 않는 스케줄만 예약 가능
         if(reservation.getUserId() == null){
-            reservation.reserve(makeReservationRequest.getUserId(), "작성자");    /// getUserName으로 변경 필요
+            GetUserNameResponse userName = getUserName(makeReservationRequest.getUserId());
+            reservation.reserve(makeReservationRequest.getUserId(), userName.getName());    /// getUserName으로 변경 필요
 
             ReservationDto reservationDto = new ReservationDto(reservation);
             return Optional.of(reservationDto);

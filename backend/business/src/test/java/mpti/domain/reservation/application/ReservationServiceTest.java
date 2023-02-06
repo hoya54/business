@@ -11,8 +11,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
+@Transactional
 @SpringBootTest
 class ReservationServiceTest {
 
@@ -33,6 +36,7 @@ class ReservationServiceTest {
 
     @Test
     @DisplayName("스케줄 생성")
+
     void openReservation(){
         Reservation reservationAt9 = createSampleReservation(9);
 
@@ -121,9 +125,6 @@ class ReservationServiceTest {
         assertThatThrownBy(() -> reservationRepository.findById(savedReservation.getId()).orElseThrow(() -> new ReservationNotFoundException(savedReservation.getId())))
                 .isInstanceOf(ReservationNotFoundException.class);
 
-
-
-
     }
 
     @Test
@@ -131,6 +132,7 @@ class ReservationServiceTest {
     void schedulingNoDelete() throws IOException {
         // 있던 스케줄 삭제 case 2 : 회원이 이미 예약한 스케줄 -> 삭제 불가
         Reservation reservationAt9 = createSampleReservation(9);
+        reservationAt9.reserve(1L, "회원");
         Reservation savedReservation = reservationRepository.save(reservationAt9);
 
         List<Integer> openHours = new ArrayList<>();
@@ -144,11 +146,17 @@ class ReservationServiceTest {
                 .openHours(openHours)
                 .build());
 
-        assertThatThrownBy(() -> reservationRepository.findById(savedReservation.getId()).orElseThrow(() -> new ReservationNotFoundException(savedReservation.getId())))
-                .isInstanceOf(ReservationNotFoundException.class);
+        Reservation findReservation = reservationRepository.findById(savedReservation.getId()).orElseThrow();
 
+        assertThat(reservationAt9.getTrainerId()).isEqualTo(findReservation.getTrainerId());
+        assertThat(reservationAt9.getTrainerName()).isEqualTo(findReservation.getTrainerName());
+        assertThat(reservationAt9.getYear()).isEqualTo(findReservation.getYear());
+        assertThat(reservationAt9.getMonth()).isEqualTo(findReservation.getMonth());
+        assertThat(reservationAt9.getDay()).isEqualTo(findReservation.getDay());
+        assertThat(reservationAt9.getHour()).isEqualTo(findReservation.getHour());
+        assertThat(findReservation.getCreatedAt()).isNotNull();
+        assertThat(findReservation.getSessionId()).isNotNull();
 
-        // 있던 스케줄 삭제 case 2 : 회원이 이미 예약한 스케줄 -> 삭제 불가
 
     }
 

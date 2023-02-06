@@ -116,7 +116,7 @@ public class ReportService {
             request = new Request.Builder()
                     // localhost 대신에 컨테이너 이름으로도 가능
                     // ex) http://user:8083/member
-                    .url("http://trainer:8002/member")
+                    .url("https://i8a803.p.ssafy.io/api/user/info/name/")
                     .post(body)
                     .build();
         }

@@ -59,7 +59,7 @@ public class ReservationController {
     // 예외 : 이미 예약된 스케쥴에 예약을 시도한 경우
 
     @PostMapping("/reserve")
-    public ResponseEntity<Optional<MakeReservationResponse>> makeReservation(@RequestBody MakeReservationRequest makeReservationRequest){
+    public ResponseEntity<Optional<MakeReservationResponse>> makeReservation(@RequestBody MakeReservationRequest makeReservationRequest) throws IOException {
 
         Long id = reservationService.makeReservation(makeReservationRequest).orElseThrow().getId();
 
