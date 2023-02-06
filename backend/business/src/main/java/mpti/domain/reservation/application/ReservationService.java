@@ -109,7 +109,7 @@ public class ReservationService {
         List<Integer> closeHours = new ArrayList<>();
 
         // 9 ~ 22시가 영업시간이라고 가정
-        for(int i = 9; i<22; i++){
+        for(int i = 6; i<24; i++){
             // 운영 시간 중 오픈을 선택한 시간대가 아니라면 트레이너가 닫은 시간대이다.
             if(!schedulingRequest.getOpenHours().contains(i)){
                 closeHours.add(i);
