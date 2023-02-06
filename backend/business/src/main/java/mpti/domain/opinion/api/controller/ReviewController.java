@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/business/opinion")
@@ -42,7 +43,6 @@ public class ReviewController {
 
     // [GET] 특정 회원이 작성한 리뷰 리스트 반환
     // Pageable
-    // 예외 : 해당 회원id가 존재하지 않는 경우
     @GetMapping("/review/list/{writerId}")
     public ResponseEntity<List<GetReviewResponse>> getReviewListByWriterId(@PathVariable Long writerId) {
 
@@ -52,7 +52,7 @@ public class ReviewController {
     }
 
     // [GET] 리뷰 상세 정보 반환
-    // 예외 : 해당 id의 리뷰가 없는 경우
+    // 예외(O) : 해당 id의 리뷰가 없는 경우
     @GetMapping("/review/{reviewId}")
     public ResponseEntity<Optional<GetReviewResponse>> getReview(@PathVariable Long reviewId) {
 
@@ -68,6 +68,12 @@ public class ReviewController {
         Long id = reviewService.create(createReviewRequest).getId();
 
         return ResponseEntity.ok(Optional.of(new CreateReviewResponse(id)));
+    }
+
+    @GetMapping("/review/uuid")
+    public ResponseEntity<Optional<UUID>> muuid(){
+        UUID uuid = UUID.randomUUID();
+        return ResponseEntity.ok(Optional.of(uuid));
     }
 
 }

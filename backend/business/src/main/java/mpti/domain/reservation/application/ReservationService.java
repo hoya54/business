@@ -3,17 +3,15 @@ package mpti.domain.reservation.application;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 //import mpti.domain.business.api.response.ReservationDto;
-import mpti.domain.opinion.api.request.GetTrainerNameRequest;
+import mpti.domain.reservation.api.request.*;
 import mpti.domain.opinion.entity.Role;
-import mpti.domain.reservation.api.request.CancelRequest;
-import mpti.domain.reservation.api.request.MakeReservationRequest;
-import mpti.domain.reservation.api.request.SchedulingRequest;
 import mpti.domain.reservation.api.response.GetReservationResponse;
 import mpti.domain.reservation.api.response.GetIdListResponse;
 import mpti.domain.reservation.dao.ReservationRepository;
 import mpti.domain.reservation.dto.ReservationDto;
 import mpti.domain.reservation.entity.Reservation;
 import okhttp3.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +29,12 @@ public class ReservationService {
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     private OkHttpClient client = new OkHttpClient();
     private final Gson gson;
+
+    @Value("${server_url.getTrainerName}")
+    private String getTrainerName;
+
+    @Value("${server_url.getUserName}")
+    private String getUserName;
 
 
     public List<GetReservationResponse> getReservationList() {
@@ -61,7 +65,7 @@ public class ReservationService {
 
         // 기존에 예약되지 않는 스케줄만 예약 가능
         if(reservation.orElseThrow().getUserId() == null){
-            reservation.orElseThrow().reserve(makeReservationRequest.getUserId());
+            reservation.orElseThrow().reserve(makeReservationRequest.getUserId(), "작성자");    /// getUserName으로 변경 필요
 
             ReservationDto reservationDto = new ReservationDto(Optional.of(reservation.orElseThrow()));
             return Optional.of(reservationDto);
@@ -135,11 +139,14 @@ public class ReservationService {
             if(!original.contains(targetHour)){
                 String trainerName = getTrainerName(schedulingRequest.getTrainerId());
 
-                Reservation reservation = new Reservation(
-                        schedulingRequest.getTrainerId(),
-                        schedulingRequest.getYear(),
-                        schedulingRequest.getMonth(),
-                        schedulingRequest.getDay(), targetHour);
+                Reservation reservation = Reservation.builder()
+                        .trainerId(schedulingRequest.getTrainerId())
+                        .trainerName(trainerName)
+                        .year(schedulingRequest.getYear())
+                        .month(schedulingRequest.getMonth())
+                        .day(schedulingRequest.getDay())
+                        .hour(targetHour)
+                        .build();
 
                 openReservation(reservation);
             }
@@ -179,12 +186,43 @@ public class ReservationService {
         // DTO를 JSON으로 변환
         String json = gson.toJson(getTrainerNameRequest);
 
+//        // RequestBody에 JSON 탑재
+//        RequestBody body = RequestBody.create(json, JSON);
+
+        Request request = new Request.Builder()
+                // localhost 대신에 컨테이너 이름으로도 가능
+                .url(getTrainerName + trainerId)
+                .get()
+                .build();
+
+        // request 요청
+        try (Response response = client.newCall(request).execute()) {
+
+            // 요청 실패
+            if (!response.isSuccessful()){
+                System.out.println("응답 실패");
+                return null;
+            }else{
+
+                return response.body().string();
+            }
+        }
+
+    }
+
+    public String getUserName(Long userId) throws IOException {
+
+        GetUserNameRequest getUserNameRequest = new GetUserNameRequest(userId);
+
+        // DTO를 JSON으로 변환
+        String json = gson.toJson(getUserNameRequest);
+
         // RequestBody에 JSON 탑재
         RequestBody body = RequestBody.create(json, JSON);
 
         Request request = new Request.Builder()
                 // localhost 대신에 컨테이너 이름으로도 가능
-                .url("http://trainer:8002/member")
+                .url("http://user:8001/member")
                 .post(body)
                 .build();
 

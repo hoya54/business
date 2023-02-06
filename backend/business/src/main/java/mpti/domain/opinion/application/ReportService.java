@@ -3,6 +3,7 @@ package mpti.domain.opinion.application;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import mpti.common.errors.ReportNotFoundException;
+import mpti.common.errors.ServerCommunicationException;
 import mpti.domain.opinion.api.request.CreateReportRequest;
 import mpti.domain.opinion.api.request.ProcessReportRequest;
 import mpti.domain.opinion.api.request.ProcessRequest;
@@ -125,13 +126,11 @@ public class ReportService {
 
             // 요청 실패
             if (!response.isSuccessful()){
-                System.out.println("응답 실패");
+                throw new ServerCommunicationException();
             }else{
                 return Optional.of(processReportResponse);
             }
         }
-
-        return Optional.of(processReportResponse);
     }
 
     public Report get(Long id){

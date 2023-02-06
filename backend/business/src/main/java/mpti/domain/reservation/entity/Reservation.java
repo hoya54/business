@@ -1,5 +1,6 @@
 package mpti.domain.reservation.entity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,24 +22,36 @@ public class Reservation {
     @Column(name ="reservation_id")
     private Long id;
 
+    @Column(nullable = false)
     private Long trainerId;
+    @Column(nullable = false)
     private String trainerName;
 
     private Long userId;
     private String userName;
 
 
-    private int year, month, day, hour;
+    @Column(nullable = false)
+    private int year;
+    @Column(nullable = false)
+    private int month;
+    @Column(nullable = false)
+    private int day;
+    @Column(nullable = false)
+    private int hour;
 
 
+    @Column(unique = true, nullable = false)
     private String sessionId;
 
     @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    public Reservation(Long trainerId, int year, int month, int day, int hour) {
+    @Builder
+    public Reservation(Long trainerId, String trainerName, int year, int month, int day, int hour) {
         this.trainerId = trainerId;
+        this.trainerName = trainerName;
         this.year = year;
         this.month = month;
         this.day = day;
@@ -50,8 +63,9 @@ public class Reservation {
         this.setSessionId(UUID.randomUUID().toString());
     }
 
-    public void reserve(Long userId){
+    public void reserve(Long userId, String userName){
         this.userId = userId;
+        this.userName = userName;
     }
 
     public void cancel(){

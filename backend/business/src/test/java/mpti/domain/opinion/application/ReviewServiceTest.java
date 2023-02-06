@@ -32,7 +32,7 @@ class ReviewServiceTest {
         assertThat(review.getTargetName()).isEqualTo(findReview.getTargetName());
         assertThat(review.getMemo()).isEqualTo(findReview.getMemo());
         assertThat(review.getStar()).isEqualTo(findReview.getStar());
-        assertThat(review.getCreatedAt()).isNotNull();
+        assertThat(findReview.getCreatedAt()).isNotNull();
     }
 
     Review createSampleReview(){

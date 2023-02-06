@@ -11,8 +11,11 @@ import java.time.LocalDateTime;
 @Setter
 public class Report extends Opinion{
 
+    @Column(nullable = false)
     private String reportType;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Role targetRole;
 
     private LocalDateTime stopUntil;

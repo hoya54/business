@@ -1,28 +1,135 @@
 package mpti.domain.reservation.application;
 
+import mpti.domain.opinion.entity.Review;
+import mpti.domain.reservation.api.request.SchedulingRequest;
+import mpti.domain.reservation.dao.ReservationRepository;
+import mpti.domain.reservation.entity.Reservation;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
+import java.io.IOException;
+import java.util.Optional;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
 class ReservationServiceTest {
 
+    @Autowired
+    ReservationService reservationService;
+
+    @Autowired
+    ReservationRepository reservationRepository;
+
     @Test
+    @DisplayName("스케줄 생성")
+    void openReservation(){
+        Reservation reservationAt9 = createSampleReservation(9);
+
+        Reservation savedReservation = reservationRepository.save(reservationAt9);
+
+        Reservation findReservation = reservationRepository.findById(savedReservation.getId()).get();
+
+        assertThat(reservationAt9.getTrainerId()).isEqualTo(findReservation.getTrainerId());
+        assertThat(reservationAt9.getTrainerName()).isEqualTo(findReservation.getTrainerName());
+        assertThat(reservationAt9.getYear()).isEqualTo(findReservation.getYear());
+        assertThat(reservationAt9.getMonth()).isEqualTo(findReservation.getMonth());
+        assertThat(reservationAt9.getDay()).isEqualTo(findReservation.getDay());
+        assertThat(reservationAt9.getHour()).isEqualTo(findReservation.getHour());
+        assertThat(findReservation.getCreatedAt()).isNotNull();
+        assertThat(findReservation.getSessionId()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("스케줄 예약")
     void makeReservation() {
+        Reservation reservationAt9 = createSampleReservation(9);
+
+        reservationAt9.reserve(1L, "김회원");
+
+        Reservation savedReservation = reservationRepository.save(reservationAt9);
+
+        Reservation findReservation = reservationRepository.findById(savedReservation.getId()).get();
+
+        assertThat(reservationAt9.getUserId()).isEqualTo(findReservation.getUserId());
+        assertThat(reservationAt9.getUserName()).isEqualTo(findReservation.getUserName());
+
     }
 
     @Test
+    @DisplayName("스케쥴 예약 취소")
     void cancelReservation() {
+        Reservation reservationAt9 = createSampleReservation(9);
+
+        reservationAt9.reserve(1L, "김회원");
+
+        Reservation savedReservation = reservationRepository.save(reservationAt9);
+
+        Reservation findReservation = reservationRepository.findById(savedReservation.getId()).get();
+
+        findReservation.cancel();
+
+        assertThat(findReservation.getUserId()).isNull();
+        assertThat(findReservation.getUserName()).isNull();
     }
 
     @Test
+    @DisplayName("스케줄 삭제")
     void deleteReservation() {
+        Reservation reservationAt9 = createSampleReservation(9);
+
+        reservationAt9.reserve(1L, "김회원");
+
+        Reservation savedReservation = reservationRepository.save(reservationAt9);
+
+        reservationRepository.delete(savedReservation);
+
+        Optional<Reservation> findReservation = reservationRepository.findById(savedReservation.getId());
+
+        assertThat(findReservation.isEmpty()).isTrue();
+    }
+
+
+    @Test
+    @DisplayName("스케줄 수정")
+    void scheduling() throws IOException {
+        // 있던 스케줄 삭제 case 1 : 아무도 예약하지 않은 스케줄 -> 삭제 불가
+        Reservation reservationAt9 = createSampleReservation(9);
+        Reservation savedReservation = reservationRepository.save(reservationAt9);
+
+        reservationService.scheduling(new SchedulingRequest());
+
+
+
+
+        // 있던 스케줄 삭제 case 2 : 회원이 이미 예약한 스케줄 -> 삭제
     }
 
     @Test
-    void openReservation() {
+    @DisplayName("트레이너 이름 불러오기")
+    void getTrainerName() throws IOException {
+        String trainerName = reservationService.getTrainerName(1L);
+        System.out.println("trainerName = " + trainerName);
     }
 
     @Test
-    void scheduling() {
+    @DisplayName("회원 이름 불러오기")
+    void getUserName() throws IOException {
+        String userName = reservationService.getUserName(1L);
+        System.out.println("userName = " + userName);
+    }
+
+    Reservation createSampleReservation(int hour){
+        return Reservation.builder()
+                .trainerId(1L)
+                .trainerName("김트레이너")
+                .year(2022)
+                .month(2)
+                .day(2)
+                .hour(hour)
+                .build();
     }
 }

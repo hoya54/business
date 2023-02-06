@@ -22,10 +22,14 @@ public abstract class Opinion {
     @Column(name ="opinion_id")
     private Long id;
 
+    @Column(nullable = false)
     private Long writerId;
+    @Column(nullable = false)
     private String writerName;
 
+    @Column(nullable = false)
     private Long targetId;
+    @Column(nullable = false)
     private String targetName;
 
     @CreatedDate
