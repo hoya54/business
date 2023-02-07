@@ -14,6 +14,7 @@ import mpti.domain.opinion.dto.ReportDto;
 import mpti.domain.opinion.entity.Report;
 import mpti.domain.opinion.entity.Role;
 import okhttp3.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +33,12 @@ public class ReportService {
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     private OkHttpClient client = new OkHttpClient();
     private final Gson gson;
+
+    @Value("${server_url.sendUserStopUntil}")
+    private String sendUserStopUntil;
+
+    @Value("${server_url.sendTrainerStopUntil}")
+    private String sendTrainerStopUntil;
 
 
     public List<GetReportResponse> getReportList() {
@@ -81,8 +88,6 @@ public class ReportService {
     public Optional<ProcessReportResponse> process(ProcessReportRequest processReportRequest) throws IOException {
         Report report = get(processReportRequest.getId());
 
-        report.setStopUntil(processReportRequest.getBlockPeriod());
-
         ProcessReportResponse processReportResponse = new ProcessReportResponse(report.getId());
 
 
@@ -95,39 +100,30 @@ public class ReportService {
         processRequest.setId(report.getTargetId());
         processRequest.setStopUntil(report.getStopUntil());
 
-
-
         // DTO를 JSON으로 변환
         String json = gson.toJson(processRequest);
 
         // RequestBody에 JSON 탑재
         RequestBody body = RequestBody.create(json, JSON);
 
-        Request request;
-        // request 설정
-        if(targetRole.equals(Role.USER)){
-             request = new Request.Builder()
-                    // localhost 대신에 컨테이너 이름으로도 가능
-                    // ex) http://user:8083/member
-                    .url("http://user:8001/member")
-                    .post(body)
-                    .build();
-        }else{
-            request = new Request.Builder()
-                    // localhost 대신에 컨테이너 이름으로도 가능
-                    // ex) http://user:8083/member
-                    .url("https://i8a803.p.ssafy.io/api/user/info/name/")
-                    .post(body)
-                    .build();
-        }
+//        Request request;
+
+        Request request = new Request.Builder()
+                .url((targetRole.equals(Role.USER)) ? sendUserStopUntil : sendTrainerStopUntil)
+                .post(body)
+                .build();
 
         // request 요청
         try (Response response = client.newCall(request).execute()) {
-
             // 요청 실패
             if (!response.isSuccessful()){
                 throw new ServerCommunicationException();
             }else{
+
+
+                report.setStopUntil(processReportRequest.getBlockPeriod());         // 서버 통신이 잘 된 경우에만 report 테이블 변경
+
+
                 return Optional.of(processReportResponse);
             }
         }

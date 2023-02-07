@@ -11,6 +11,8 @@ public class SchedulingRequest {
 
     private Long trainerId;
 
+    private String trainerName;
+
     private int year;
 
     private int month;
@@ -19,9 +21,13 @@ public class SchedulingRequest {
 
     private List<Integer> openHours;
 
+    public SchedulingRequest() {
+    }
+
     @Builder
-    public SchedulingRequest(Long trainerId, int year, int month, int day, List<Integer> openHours) {
+    public SchedulingRequest(Long trainerId, String trainerName, int year, int month, int day, List<Integer> openHours) {
         this.trainerId = trainerId;
+        this.trainerName = trainerName;
         this.year = year;
         this.month = month;
         this.day = day;

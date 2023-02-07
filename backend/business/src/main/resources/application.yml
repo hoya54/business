@@ -21,5 +21,5 @@ server:
   port: 8003
 
 server_url :
-  getUserName    : https://i8a803.p.ssafy.io/api/user/info/name/
-  getTrainerName : https://i8a803.p.ssafy.io/api/trainer/info/name/
+  sendUserStopUntil : https://i8a803.p.ssafy.io/api/user/admin/stop
+  sendTrainerStopUntil : https://i8a803.p.ssafy.io/api/trainer/admin/stop

@@ -8,4 +8,6 @@ public class MakeReservationRequest {
     private Long id;
 
     private Long userId;
+
+    private String userName;
 }

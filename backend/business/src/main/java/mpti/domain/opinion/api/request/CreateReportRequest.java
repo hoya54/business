@@ -1,6 +1,7 @@
 package mpti.domain.opinion.api.request;
 
 import lombok.Getter;
+import mpti.domain.opinion.entity.Role;
 
 @Getter
 public class CreateReportRequest {
@@ -14,6 +15,8 @@ public class CreateReportRequest {
     private String targetName;
 
     private String reportType;
+
+    private String targetRole;
 
     private String memo;
 

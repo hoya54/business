@@ -97,6 +97,8 @@ public class ReservationController {
         return ResponseEntity.ok(trainerIdList);
     }
 
+//    예외 : 없는 예약id를 요청한 경우
+
     @GetMapping("/{id}")
     public ResponseEntity<GetReservationResponse> getReservation(@PathVariable Long id){
 

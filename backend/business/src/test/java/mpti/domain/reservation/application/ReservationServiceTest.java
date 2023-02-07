@@ -116,6 +116,7 @@ class ReservationServiceTest {
 
         reservationService.scheduling(SchedulingRequest.builder()
                         .trainerId(1L)
+                        .trainerName("원쵸디")
                         .year(2022)
                         .month(2)
                         .day(2)
@@ -140,6 +141,7 @@ class ReservationServiceTest {
 
         reservationService.scheduling(SchedulingRequest.builder()
                 .trainerId(1L)
+                .trainerName("원쵸디")
                 .year(2022)
                 .month(2)
                 .day(2)
@@ -160,21 +162,21 @@ class ReservationServiceTest {
 
     }
 
-    @Test
-    @DisplayName("트레이너 이름 불러오기")
-    void getTrainerName() throws IOException {
-        GetTrainerNameResponse trainerName = reservationService.getTrainerName(1L);
-        System.out.println("trainerName = " + trainerName.getName());
-        assertThat(trainerName).isNotNull();
-    }
-
-    @Test
-    @DisplayName("회원 이름 불러오기")
-    void getUserName() throws IOException {
-        GetUserNameResponse userName = reservationService.getUserName(1L);
-        System.out.println("userName = " + userName.getName());
-        assertThat(userName).isNotNull();
-    }
+//    @Test
+//    @DisplayName("트레이너 이름 불러오기")
+//    void getTrainerName() throws IOException {
+//        GetTrainerNameResponse trainerName = reservationService.getTrainerName(1L);
+//        System.out.println("trainerName = " + trainerName.getName());
+//        assertThat(trainerName).isNotNull();
+//    }
+//
+//    @Test
+//    @DisplayName("회원 이름 불러오기")
+//    void getUserName() throws IOException {
+//        GetUserNameResponse userName = reservationService.getUserName(1L);
+//        System.out.println("userName = " + userName.getName());
+//        assertThat(userName).isNotNull();
+//    }
 
     Reservation createSampleReservation(int hour){
         return Reservation.builder()

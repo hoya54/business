@@ -33,13 +33,6 @@ public class ReservationService {
     private OkHttpClient client = new OkHttpClient();
     private final Gson gson;
 
-    @Value("${server_url.getTrainerName}")
-    private String getTrainerName;
-
-    @Value("${server_url.getUserName}")
-    private String getUserName;
-
-
     public List<GetReservationResponse> getReservationList() {
         List<Reservation> reservationList = reservationRepository.findAll();
 
@@ -68,9 +61,7 @@ public class ReservationService {
 
         // 기존에 예약되지 않는 스케줄만 예약 가능
         if(reservation.getUserId() == null){
-            GetUserNameResponse userName = getUserName(makeReservationRequest.getUserId());
-            reservation.reserve(makeReservationRequest.getUserId(), userName.getName());    /// getUserName으로 변경 필요
-
+            reservation.reserve(makeReservationRequest.getUserId(), makeReservationRequest.getUserName());    /// getUserName으로 변경 필요
             ReservationDto reservationDto = new ReservationDto(reservation);
             return Optional.of(reservationDto);
         }
@@ -141,11 +132,10 @@ public class ReservationService {
             int targetHour = schedulingRequest.getOpenHours().get(i);
 
             if(!original.contains(targetHour)){
-                GetTrainerNameResponse trainerName = getTrainerName(schedulingRequest.getTrainerId());
 
                 Reservation reservation = Reservation.builder()
                         .trainerId(schedulingRequest.getTrainerId())
-                        .trainerName(trainerName.getName())
+                        .trainerName(schedulingRequest.getTrainerName())
                         .year(schedulingRequest.getYear())
                         .month(schedulingRequest.getMonth())
                         .day(schedulingRequest.getDay())
@@ -183,72 +173,72 @@ public class ReservationService {
         return getIdListResponseList;
     }
 
-    public GetTrainerNameResponse getTrainerName(Long trainerId) throws IOException {
+//    public GetTrainerNameResponse getTrainerName(Long trainerId) throws IOException {
+//
+//        GetTrainerNameRequest getTrainerNameRequest = new GetTrainerNameRequest(trainerId);
+//
+//        // DTO를 JSON으로 변환
+//        String json = gson.toJson(getTrainerNameRequest);
+//
+////        // RequestBody에 JSON 탑재
+////        RequestBody body = RequestBody.create(json, JSON);
+//
+//        Request request = new Request.Builder()
+//                // localhost 대신에 컨테이너 이름으로도 가능
+//                .url(getTrainerName + trainerId)
+//                .get()
+//                .build();
+//
+//        // request 요청
+//        try (Response response = client.newCall(request).execute()) {
+//
+//            // 요청 실패
+//            if (!response.isSuccessful()){
+//                System.out.println("응답 실패");
+//                return null;
+//            }else{
+//
+//                String st = response.body().string();
+//
+//                GetTrainerNameResponse getTrainerNameResponse = gson.fromJson(st, GetTrainerNameResponse.class);
+//                return getTrainerNameResponse;
+//            }
+//        }
+//
+//    }
 
-        GetTrainerNameRequest getTrainerNameRequest = new GetTrainerNameRequest(trainerId);
-
-        // DTO를 JSON으로 변환
-        String json = gson.toJson(getTrainerNameRequest);
-
-//        // RequestBody에 JSON 탑재
-//        RequestBody body = RequestBody.create(json, JSON);
-
-        Request request = new Request.Builder()
-                // localhost 대신에 컨테이너 이름으로도 가능
-                .url(getTrainerName + trainerId)
-                .get()
-                .build();
-
-        // request 요청
-        try (Response response = client.newCall(request).execute()) {
-
-            // 요청 실패
-            if (!response.isSuccessful()){
-                System.out.println("응답 실패");
-                return null;
-            }else{
-
-                String st = response.body().string();
-
-                GetTrainerNameResponse getTrainerNameResponse = gson.fromJson(st, GetTrainerNameResponse.class);
-                return getTrainerNameResponse;
-            }
-        }
-
-    }
-
-    public GetUserNameResponse getUserName(Long userId) throws IOException {
-
-        GetUserNameRequest getUserNameRequest = new GetUserNameRequest(userId);
-
-        // DTO를 JSON으로 변환
-        String json = gson.toJson(getUserNameRequest);
-
-//        // RequestBody에 JSON 탑재
-//        RequestBody body = RequestBody.create(json, JSON);
-
-        Request request = new Request.Builder()
-                // localhost 대신에 컨테이너 이름으로도 가능
-                .url(getUserName + userId)
-                .get()
-                .build();
-
-        // request 요청
-        try (Response response = client.newCall(request).execute()) {
-
-            // 요청 실패
-            if (!response.isSuccessful()){
-                System.out.println("응답 실패");
-                return null;
-            }else{
-
-                String st = response.body().string();
-
-                GetUserNameResponse getUserNameResponse = gson.fromJson(st, GetUserNameResponse.class);
-                return getUserNameResponse;
-            }
-        }
-
-    }
+//    public GetUserNameResponse getUserName(Long userId) throws IOException {
+//
+//
+//
+//        // DTO를 JSON으로 변환
+//        String json = gson.toJson(getUserNameRequest);
+//
+////        // RequestBody에 JSON 탑재
+////        RequestBody body = RequestBody.create(json, JSON);
+//
+//        Request request = new Request.Builder()
+//                // localhost 대신에 컨테이너 이름으로도 가능
+//                .url(getUserName + userId)
+//                .get()
+//                .build();
+//
+//        // request 요청
+//        try (Response response = client.newCall(request).execute()) {
+//
+//            // 요청 실패
+//            if (!response.isSuccessful()){
+//                System.out.println("응답 실패");
+//                return null;
+//            }else{
+//
+//                String st = response.body().string();
+//
+//                GetUserNameResponse getUserNameResponse = gson.fromJson(st, GetUserNameResponse.class);
+//                return getUserNameResponse;
+//            }
+//        }
+//
+//    }
 
 }

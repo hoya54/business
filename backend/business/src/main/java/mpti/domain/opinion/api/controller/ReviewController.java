@@ -70,10 +70,5 @@ public class ReviewController {
         return ResponseEntity.ok(Optional.of(new CreateReviewResponse(id)));
     }
 
-    @GetMapping("/review/uuid")
-    public ResponseEntity<Optional<UUID>> muuid(){
-        UUID uuid = UUID.randomUUID();
-        return ResponseEntity.ok(Optional.of(uuid));
-    }
 
 }

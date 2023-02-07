@@ -1,5 +1,6 @@
 package mpti.domain.opinion.application;
 
+import mpti.domain.opinion.api.request.ProcessReportRequest;
 import mpti.domain.opinion.dao.ReportRepository;
 import mpti.domain.opinion.entity.Report;
 import mpti.domain.opinion.entity.Role;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @Transactional
@@ -17,6 +20,9 @@ class ReportServiceTest {
 
     @Autowired
     ReportRepository reportRepository;
+
+    @Autowired
+    ReportService reportService;
 
 
     @Test
@@ -41,13 +47,17 @@ class ReportServiceTest {
 
     @Test
     @DisplayName("신고 처리")
-    void process() {
+    void process() throws IOException {
 
         Report report = createSampleReport();
 
         Report savedReport = reportRepository.save(report);
 
         int blockPeriod = 3;
+
+        reportService.process(new ProcessReportRequest(savedReport.getId(), blockPeriod));
+
+
 
         savedReport.setStopUntil(blockPeriod);
 

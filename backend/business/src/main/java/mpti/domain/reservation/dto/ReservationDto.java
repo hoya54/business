@@ -13,8 +13,10 @@ public class ReservationDto {
     private Long id;
 
     private Long trainerId;
+    private String trainerName;
 
     private Long userId;
+    private String userName;
 
     private int year, month, day, hour;
 
@@ -29,7 +31,9 @@ public class ReservationDto {
 
         this.id = reservation.getId();
         this.trainerId = reservation.getTrainerId();
+        this.trainerName = reservation.getTrainerName();
         this.userId = reservation.getUserId();
+        this.userName = reservation.getUserName();
         this.year = reservation.getYear();
         this.month = reservation.getMonth();
         this.day = reservation.getDay();

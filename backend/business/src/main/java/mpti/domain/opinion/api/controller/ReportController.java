@@ -62,7 +62,7 @@ public class ReportController {
 
         Optional<ProcessReportResponse> processReportResponse = reportService.process(processReportRequest);
 
-        // 여기서 유저 테이블로 계정정지종료일(stopUntil) 전송 필요
+        // 여기서 유저, 트레이너 테이블로 계정정지종료일(stopUntil) 전송 필요
 
         return ResponseEntity.ok(processReportResponse);
     }
