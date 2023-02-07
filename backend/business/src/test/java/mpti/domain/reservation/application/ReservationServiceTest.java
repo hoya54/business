@@ -3,8 +3,6 @@ package mpti.domain.reservation.application;
 import mpti.common.errors.ReservationNotFoundException;
 import mpti.domain.opinion.entity.Review;
 import mpti.domain.reservation.api.request.SchedulingRequest;
-import mpti.domain.reservation.api.response.GetTrainerNameResponse;
-import mpti.domain.reservation.api.response.GetUserNameResponse;
 import mpti.domain.reservation.dao.ReservationRepository;
 import mpti.domain.reservation.entity.Reservation;
 import org.junit.jupiter.api.DisplayName;

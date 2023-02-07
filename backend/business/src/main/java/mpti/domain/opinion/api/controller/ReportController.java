@@ -56,13 +56,11 @@ public class ReportController {
 
     // [GET] 신고 내역 처리
     // 예외(O) : [404 NOT FOUND] 해당 id의 신고 내역이 없는 경우(위와 동일한 예외)
-    // 예외(통신 확인 미완성) : 유저서버와 통신 중 예외 발생
+    // 예외(O) : [404 NOT FOUND] 유저서버와 통신 중 예외 발생
     @PostMapping("/report/process")
     public ResponseEntity<Optional<ProcessReportResponse>> processReport(@RequestBody ProcessReportRequest processReportRequest) throws IOException {
 
         Optional<ProcessReportResponse> processReportResponse = reportService.process(processReportRequest);
-
-        // 여기서 유저, 트레이너 테이블로 계정정지종료일(stopUntil) 전송 필요
 
         return ResponseEntity.ok(processReportResponse);
     }
