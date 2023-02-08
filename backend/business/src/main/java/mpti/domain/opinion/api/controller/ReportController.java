@@ -61,8 +61,9 @@ public class ReportController {
     @PostMapping("/report/process")
     public ResponseEntity<Optional<ProcessReportResponse>> processReport(@RequestBody ProcessReportRequest processReportRequest) throws IOException {
 
-        Optional<ProcessReportResponse> processReportResponse = reportService.process(processReportRequest);
-
-        return ResponseEntity.ok(processReportResponse);
+//        Optional<ProcessReportResponse> processReportResponse = reportService.process(processReportRequest);
+        reportService.process(processReportRequest);
+        return null;
+//        return ResponseEntity.ok(processReportResponse);
     }
 }

@@ -119,20 +119,19 @@ public class ReportService {
                 .build();
 
         // request 요청
-        try (Response response = client.newCall(request).execute()) {
-            // 요청 실패
-            if (!response.isSuccessful()){
+//        try (Response response = client.newCall(request).execute()) {
+//            // 요청 실패
+//            if (!response.isSuccessful()){
 //                throw new ServerCommunicationException();
-                return Optional.of(null);
-            }else{
-
-
-//                report.setStopUntil(processReportRequest.getBlockPeriod());         // 서버 통신이 잘 된 경우에만 report 테이블 변경
-
-
-                return Optional.of(processReportResponse);
-            }
-        }
+//            }else{
+//
+////                report.setStopUntil(processReportRequest.getBlockPeriod());         // 서버 통신이 잘 된 경우에만 report 테이블 변경
+//
+//
+//                return Optional.of(processReportResponse);
+//            }
+//        }
+        return null;
     }
 
     public Report get(Long id){
