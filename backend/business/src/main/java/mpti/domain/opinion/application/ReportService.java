@@ -94,6 +94,7 @@ public class ReportService {
 
         ProcessReportResponse processReportResponse = new ProcessReportResponse(report.getId());
 
+        report.setStopUntil(processReportRequest.getBlockPeriod());         // 서버 통신이 잘 된 경우에만 report 테이블 변경
 
         // 서버간 통신
         // 유저 테이블로 유저 아이디와 정지일 전송
@@ -125,7 +126,7 @@ public class ReportService {
             }else{
 
 
-                report.setStopUntil(processReportRequest.getBlockPeriod());         // 서버 통신이 잘 된 경우에만 report 테이블 변경
+//                report.setStopUntil(processReportRequest.getBlockPeriod());         // 서버 통신이 잘 된 경우에만 report 테이블 변경
 
 
                 return Optional.of(processReportResponse);
