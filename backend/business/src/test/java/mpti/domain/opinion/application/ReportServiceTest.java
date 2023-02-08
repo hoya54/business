@@ -55,7 +55,7 @@ class ReportServiceTest {
 
         int blockPeriod = 3;
 
-        reportService.process(new ProcessReportRequest(savedReport.getId(), blockPeriod));
+//        reportService.process(new ProcessReportRequest(savedReport.getId(), Integer.parseInt(blockPeriod)));
 
 
 

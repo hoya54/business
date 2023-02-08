@@ -62,9 +62,16 @@ public class ReportController {
     @PostMapping("/report/process")
     public ResponseEntity<Optional<ProcessReportResponse>> processReport(@RequestBody ProcessReportRequest processReportRequest) {
 
+        System.out.println("---------여기다");
+
 //        Optional<ProcessReportResponse> processReportResponse = reportService.process(processReportRequest);
         reportService.process(processReportRequest);
         return null;
 //        return ResponseEntity.ok(processReportResponse);
+    }
+
+    @PostMapping("/report/test")
+    public ResponseEntity<String> process(){
+        return ResponseEntity.ok("hi");
     }
 }
