@@ -29,7 +29,7 @@ public class ReportController {
     @GetMapping("/report/list/{page}")
     public ResponseEntity<Page<GetReportResponse>> getReportList(@PathVariable int page) {
 
-        Page<GetReportResponse> getReportResponseList = reportService.getReportList(page, 5, "id");
+        Page<GetReportResponse> getReportResponseList = reportService.getReportList(page, 20, "id");
 
         return ResponseEntity.ok(getReportResponseList);
     }
