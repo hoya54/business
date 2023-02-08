@@ -122,7 +122,8 @@ public class ReportService {
         try (Response response = client.newCall(request).execute()) {
             // 요청 실패
             if (!response.isSuccessful()){
-                throw new ServerCommunicationException();
+//                throw new ServerCommunicationException();
+                return Optional.of(null);
             }else{
 
 
