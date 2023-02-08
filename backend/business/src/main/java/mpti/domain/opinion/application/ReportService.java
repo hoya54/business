@@ -89,7 +89,7 @@ public class ReportService {
         return getReportResponse;
     }
 
-    public Optional<ProcessReportResponse> process(ProcessReportRequest processReportRequest) throws IOException {
+    public Optional<ProcessReportResponse> process(ProcessReportRequest processReportRequest){
         Report report = get(processReportRequest.getId());
 
         ProcessReportResponse processReportResponse = new ProcessReportResponse(report.getId());

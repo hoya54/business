@@ -23,7 +23,7 @@ public class ReviewController {
     // [GET] 현재 모든 리뷰 리스트 반환
     // Pageable
 
-    @GetMapping("/review/user/list/{page}")
+    @GetMapping("/review/list/{page}")
     public ResponseEntity<Page<GetReviewResponse>> getReviewList(@PathVariable int page) {
 
         Page<GetReviewResponse> getReviewResponseList = reviewService.getReviewList(page, 5, "id");
@@ -44,7 +44,7 @@ public class ReviewController {
 
     // [GET] 특정 회원이 작성한 리뷰 리스트 반환
     // Pageable
-    @GetMapping("/review/list/{writerId}/{page}")
+    @GetMapping("/review/user/list/{writerId}/{page}")
     public ResponseEntity<Page<GetReviewResponse>> getReviewListByWriterId(@PathVariable Long writerId, @PathVariable int page) {
 
         Page<GetReviewResponse> getReviewByWriterIdResponseList = reviewService.getReviewListByWriterId(writerId, page, 5, "id");

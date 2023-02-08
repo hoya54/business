@@ -60,7 +60,7 @@ public class ReportController {
     // 예외(O) : [404 NOT FOUND] 해당 id의 신고 내역이 없는 경우(위와 동일한 예외)
     // 예외(O) : [404 NOT FOUND] 유저서버와 통신 중 예외 발생
     @PostMapping("/report/process")
-    public ResponseEntity<Optional<ProcessReportResponse>> processReport(@RequestBody ProcessReportRequest processReportRequest) throws IOException {
+    public ResponseEntity<Optional<ProcessReportResponse>> processReport(@RequestBody ProcessReportRequest processReportRequest) {
 
 //        Optional<ProcessReportResponse> processReportResponse = reportService.process(processReportRequest);
         reportService.process(processReportRequest);

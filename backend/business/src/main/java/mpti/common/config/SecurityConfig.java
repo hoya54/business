@@ -41,7 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         http
-                .addFilter(corsFilter) // @CrossOrigin (인증X), 시큐리티 필터에 등록 인증 (O)
+//                .addFilter(corsFilter) // @CrossOrigin (인증X), 시큐리티 필터에 등록 인증 (O)
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 내 서버는 stateless 세션 사용 X
                 .and()
