@@ -7,6 +7,9 @@ import mpti.domain.opinion.api.response.GetReviewResponse;
 import mpti.domain.opinion.dao.ReviewRepository;
 import mpti.domain.opinion.dto.ReviewDto;
 import mpti.domain.opinion.entity.Review;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,30 +24,36 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
 
-    public List<GetReviewResponse> getReviewList() {
-        List<Review> reviewList = reviewRepository.findAll();
+    public Page<GetReviewResponse> getReviewList(int page, int size, String orderType) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderType));
 
-        List<GetReviewResponse> getReviewResponse = reviewList.stream()
-                .map((review) -> new GetReviewResponse(review))
-                .collect(Collectors.toList());
+        Page<Review> reviewList = reviewRepository.findAll(pageRequest);
+
+        Page<GetReviewResponse> getReviewResponse = reviewList
+                .map((review) -> new GetReviewResponse(review));
+//                .collect(Collectors.toList());
         return getReviewResponse;
     }
 
-    public List<GetReviewResponse> getTrainerReviewList(Long trainerId) {
-        List<Review> reviewList = reviewRepository.findAllByTargetId(trainerId);
+    public Page<GetReviewResponse> getTrainerReviewList(Long trainerId, int page, int size, String orderType) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderType));
 
-        List<GetReviewResponse> getReviewResponse = reviewList.stream()
-                .map((review) -> new GetReviewResponse(review))
-                .collect(Collectors.toList());
+        Page<Review> reviewList = reviewRepository.findAllByTargetId(trainerId, pageRequest);
+
+        Page<GetReviewResponse> getReviewResponse = reviewList
+                .map((review) -> new GetReviewResponse(review));
+//                .collect(Collectors.toList());
         return getReviewResponse;
     }
 
-    public List<GetReviewResponse> getReviewListByWriterId(Long writerId) {
-        List<Review> reviewList = reviewRepository.findByWriterId(writerId);
+    public Page<GetReviewResponse> getReviewListByWriterId(Long writerId, int page, int size, String orderType) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderType));
 
-        List<GetReviewResponse> getReviewResponse = reviewList.stream()
-                .map((review) -> new GetReviewResponse(review))
-                .collect(Collectors.toList());
+        Page<Review> reviewList = reviewRepository.findByWriterId(writerId, pageRequest);
+
+        Page<GetReviewResponse> getReviewResponse = reviewList
+                .map((review) -> new GetReviewResponse(review));
+//                .collect(Collectors.toList());
         return getReviewResponse;
     }
 

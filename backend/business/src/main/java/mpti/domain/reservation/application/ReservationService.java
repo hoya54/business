@@ -2,17 +2,23 @@ package mpti.domain.reservation.application;
 
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
+import mpti.common.errors.AlreadyReservedException;
 import mpti.common.errors.ReservationNotFoundException;
+import mpti.common.errors.ServerCommunicationException;
 import mpti.domain.reservation.api.request.*;
 import mpti.domain.opinion.entity.Role;
+import mpti.domain.reservation.api.response.CancelReservationResponse;
 import mpti.domain.reservation.api.response.GetReservationResponse;
-import mpti.domain.reservation.api.response.GetIdListResponse;
+import mpti.domain.reservation.api.response.GetIdSetResponse;
 
 import mpti.domain.reservation.dao.ReservationRepository;
 import mpti.domain.reservation.dto.ReservationDto;
 import mpti.domain.reservation.entity.Reservation;
 import okhttp3.*;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,22 +37,26 @@ public class ReservationService {
     private OkHttpClient client = new OkHttpClient();
     private final Gson gson;
 
-    public List<GetReservationResponse> getReservationList() {
-        List<Reservation> reservationList = reservationRepository.findAll();
+    public Page<GetReservationResponse> getReservationList(int page, int size, String orderType) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderType));
+
+        Page<Reservation> reservationList = reservationRepository.findAll(pageRequest);
 
 
-        List<GetReservationResponse> getReservationResponseList = reservationList.stream()
-                .map((reservation) -> new GetReservationResponse(reservation))
-                .collect(Collectors.toList());
+        Page<GetReservationResponse> getReservationResponseList = reservationList
+                .map((reservation) -> new GetReservationResponse(reservation));
+//                .collect(Collectors.toList());
         return getReservationResponseList;
     }
 
-    public List<GetReservationResponse> getReservationListByTrainerIdAndYearAndMonthAndDay(Long trainerId, int year, int month, int day) {
-        List<Reservation> reservationList = reservationRepository.findAllByTrainerIdAndYearAndMonthAndDay(trainerId, year, month, day);
+    public Page<GetReservationResponse> getReservationListByTrainerIdAndYearAndMonthAndDay(Long trainerId, int year, int month, int day, int page, int size, String orderType) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderType));
 
-        List<GetReservationResponse> getReservationResponseList = reservationList.stream()
-                .map((reservation) -> new GetReservationResponse(reservation))
-                .collect(Collectors.toList());
+        Page<Reservation> reservationList = reservationRepository.findAllPageByTrainerIdAndYearAndMonthAndDay(trainerId, year, month, day, pageRequest);
+
+        Page<GetReservationResponse> getReservationResponseList = reservationList
+                .map((reservation) -> new GetReservationResponse(reservation));
+//                .collect(Collectors.toList());
         return getReservationResponseList;
     }
 
@@ -62,22 +72,23 @@ public class ReservationService {
             reservation.reserve(makeReservationRequest.getUserId(), makeReservationRequest.getUserName());    /// getUserName으로 변경 필요
             ReservationDto reservationDto = new ReservationDto(reservation);
             return Optional.of(reservationDto);
+        }else{
+            throw new AlreadyReservedException(makeReservationRequest.getId());
         }
-
-        System.out.println("이미 예약된 시간대에 예약을 시도하였습니다.");
-        return null;
     }
 
-    public Optional<ReservationDto> cancelReservation(CancelRequest cancelRequest){
+    public Optional<CancelReservationResponse> cancelReservation(CancelRequest cancelRequest){
         Reservation reservation = get(cancelRequest.getId());
 
         // 요청한 유저아이디와 예약된 유저아이디가 같아야지만 예약 취소 가능
-        if(reservation.getUserId() == cancelRequest.getUserId()){
+        if(reservation.getUserId().equals(cancelRequest.getUserId())){
             reservation.cancel();
-            return Optional.of(new ReservationDto(reservation));
+            return Optional.of(new CancelReservationResponse(reservation));
+        }else{
+
         }
 
-        return Optional.of(new ReservationDto());
+        return Optional.of(new CancelReservationResponse());
     }
 
     public void deleteReservation(Reservation reservation){
@@ -145,30 +156,32 @@ public class ReservationService {
         }
     }
 
-    public Set<GetIdListResponse> getIdList(Long id, Role role) {
+    public Set<GetIdSetResponse> getIdSet(Long id, Role role) {
 
         List<Reservation> reservations;
-        Set<GetIdListResponse> getIdListResponseList = new HashSet<>();
+        Set<GetIdSetResponse> getIdListResponseSet = new HashSet<>();
 
         if(role.equals(Role.USER)){
             reservations = reservationRepository.findByUserId(id);
             for(Reservation reservation : reservations){
                 Long trainerId = reservation.getTrainerId();
+                String trainerName = reservation.getTrainerName();
                 if(trainerId != null){
-                    getIdListResponseList.add(new GetIdListResponse(trainerId));
+                    getIdListResponseSet.add(new GetIdSetResponse(trainerId, trainerName));
                 }
             }
         }else {
             reservations = reservationRepository.findByTrainerId(id);
             for(Reservation reservation : reservations){
                 Long userId = reservation.getUserId();
+                String userName = reservation.getUserName();
                 if(userId != null){
-                    getIdListResponseList.add(new GetIdListResponse(userId));
+                    getIdListResponseSet.add(new GetIdSetResponse(userId, userName));
                 }
             }
         }
 
-        return getIdListResponseList;
+        return getIdListResponseSet;
     }
 
 //    public GetTrainerNameResponse getTrainerName(Long trainerId) throws IOException {

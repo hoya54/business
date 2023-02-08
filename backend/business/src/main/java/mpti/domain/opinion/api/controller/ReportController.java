@@ -7,6 +7,7 @@ import mpti.domain.opinion.api.response.CreateReportResponse;
 import mpti.domain.opinion.api.response.GetReportResponse;
 import mpti.domain.opinion.api.response.ProcessReportResponse;
 import mpti.domain.opinion.application.ReportService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,15 +26,15 @@ public class ReportController {
     // [GET] 현재 모든 신고 리스트 반환
     // Pageable
 
-    @GetMapping("/report/list")
-    public ResponseEntity<List<GetReportResponse>> getReportList() {
+    @GetMapping("/report/list/{page}")
+    public ResponseEntity<Page<GetReportResponse>> getReportList(@PathVariable int page) {
 
-        List<GetReportResponse> getReportResponseList = reportService.getReportList();
+        Page<GetReportResponse> getReportResponseList = reportService.getReportList(page, 5, "id");
 
         return ResponseEntity.ok(getReportResponseList);
     }
 
-    // [GET] 신고 작성
+    // [POST] 신고 작성
 
     @PostMapping("/report/write")
     public ResponseEntity<Optional<CreateReportResponse>> createReport(@RequestBody CreateReportRequest createReportRequest){

@@ -15,6 +15,9 @@ import mpti.domain.opinion.entity.Report;
 import mpti.domain.opinion.entity.Role;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,13 +44,14 @@ public class ReportService {
     private String sendTrainerStopUntil;
 
 
-    public List<GetReportResponse> getReportList() {
+    public Page<GetReportResponse> getReportList(int page, int size, String orderType) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderType));
 
-        List<Report> reports = reportRepository.findAll();
+        Page<Report> reports = reportRepository.findAll(pageRequest);
 
-        List<GetReportResponse> getReportResponseList = reports.stream()
-                .map((report) -> new GetReportResponse(report))
-                .collect(Collectors.toList());
+        Page<GetReportResponse> getReportResponseList = reports.
+                map((report) -> new GetReportResponse(report));
+//                .collect(Collectors.toList());
         return getReportResponseList;
     }
 
