@@ -1,8 +1,9 @@
-package mpti.domain.pay.dto;
+package mpti.domain.pay.api.response;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import mpti.domain.pay.dto.Amount;
 
 @Getter
 @Setter

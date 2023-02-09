@@ -30,3 +30,6 @@ app:
 
   cors:
     allowedOrigins: http://localhost:3000,http://localhost:8002
+
+  kakao:
+    adminKey : 28cc434cda4b5ee7e071190d82b4bc70

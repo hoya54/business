@@ -1,29 +1,27 @@
 package mpti.domain.pay.application;
 
-import mpti.domain.pay.dto.ApproveResponse;
-import mpti.domain.pay.dto.ReadyResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import mpti.domain.pay.api.response.ApproveResponse;
+import mpti.domain.pay.api.response.ReadyResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.Charset;
 
 @Service
 public class KakaoPayService {
 
+    @Value("${app.kakao.adminKey}")
+    private String kakao_adminKey;
+
     public ReadyResponse payReady(int totalAmount) throws IOException {
 
         String order_id = "1111";
-        String itemName = "rice";
+        String itemName = "호갱용 PT 1회권";
         Integer quantity = 1;
 
 
@@ -92,7 +90,7 @@ public class KakaoPayService {
     // header() 셋팅
     private HttpHeaders getHeaders() {
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "KakaoAK 28cc434cda4b5ee7e071190d82b4bc70");
+        headers.set("Authorization", "KakaoAK " + kakao_adminKey);
         headers.set("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
         return headers;
