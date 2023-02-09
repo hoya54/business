@@ -1,5 +1,6 @@
 package mpti.domain.pay.application;
 
+import lombok.extern.slf4j.Slf4j;
 import mpti.domain.pay.api.response.ApproveResponse;
 import mpti.domain.pay.api.response.ReadyResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 
 @Service
+@Slf4j
 public class KakaoPayService {
 
     @Value("${app.kakao.adminKey}")
@@ -83,7 +85,7 @@ public class KakaoPayService {
         ApproveResponse approveResponse = template.postForObject(url, requestEntity, ApproveResponse.class);
 //        log.info("결재승인 응답객체: " + approveResponse);
 
-        System.out.println("approveResponse = " + approveResponse);
+        log.info("approveResponse = {}",  approveResponse);
 
         return approveResponse;
     }

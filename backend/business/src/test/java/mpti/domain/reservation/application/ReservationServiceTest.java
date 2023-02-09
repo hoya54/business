@@ -164,22 +164,6 @@ class ReservationServiceTest {
 
     }
 
-//    @Test
-//    @DisplayName("트레이너 이름 불러오기")
-//    void getTrainerName() throws IOException {
-//        GetTrainerNameResponse trainerName = reservationService.getTrainerName(1L);
-//        System.out.println("trainerName = " + trainerName.getName());
-//        assertThat(trainerName).isNotNull();
-//    }
-//
-//    @Test
-//    @DisplayName("회원 이름 불러오기")
-//    void getUserName() throws IOException {
-//        GetUserNameResponse userName = reservationService.getUserName(1L);
-//        System.out.println("userName = " + userName.getName());
-//        assertThat(userName).isNotNull();
-//    }
-
     Reservation createSampleReservation(int hour){
         return Reservation.builder()
                 .trainerId(1L)

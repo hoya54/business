@@ -43,9 +43,9 @@ public class ReservationController {
     // [GET] 특정 트레이너의 특정 날짜의 예약 리스트를 반환
     // Pageable
 
-    @GetMapping ("/list/{id}/{year}/{month}/{day}/{page}")
+    @GetMapping ("/list/{trainerId}/{year}/{month}/{day}/{page}")
     public ResponseEntity<Page<GetReservationResponse>> getReservationListByTrainerIdAndYearAndMonthAndDay(
-            @PathVariable("id") Long trainerId,
+            @PathVariable("trainerId") Long trainerId,
             @PathVariable("year") int year,
             @PathVariable("month") int month,
             @PathVariable("day") int day,

@@ -13,6 +13,7 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/api/business/pay")
 @CrossOrigin("http://localhost:8080")
+@Slf4j
 public class PayController {
 
     @Autowired
@@ -24,11 +25,7 @@ public class PayController {
     @GetMapping("/order/request")
     public ResponseEntity<ReadyResponse> payReady(@RequestParam(name = "total_amount") int totalAmount) throws IOException {
 
-        System.out.println();
-        System.out.println("=======================");
-        System.out.println("order/pay 시작");
-        System.out.println("=======================");
-        System.out.println();
+        log.info("order/pay start");
 
         // 카카오 결제 준비하기	- 결제요청 service 실행.
         ReadyResponse readyResponse = kakaopayService.payReady(totalAmount);
@@ -41,30 +38,13 @@ public class PayController {
     @GetMapping("/order/completed/{pg_token}")
     public ResponseEntity<ApproveResponse> payCompleted(@PathVariable("pg_token") String pgToken) {
 
-        System.out.println();
-        System.out.println("=======================");
-        System.out.println("order/pay  // COMPLETED 시작");
-        System.out.println("=======================");
-        System.out.println();
+        log.info("order/completed start");
 
-        System.out.println("pgToken = " + pgToken);
-        System.out.println("tid = " + tid);
-
-
+        log.info("pgToken = {}", pgToken);
+        log.info("tid = {}", tid);
 
         // 카카오 결재 요청하기
         ApproveResponse approveResponse = kakaopayService.payApprove(tid, pgToken);
-
-        // 5. payment 저장
-        //	orderNo, payMathod, 주문명.
-        // - 카카오 페이로 넘겨받은 결재정보값을 저장.
-//        Payment payment = Payment.builder()
-//                .paymentClassName(approveResponse.getItem_name())
-//                .payMathod(approveResponse.getPayment_method_type())
-//                .payCode(tid)
-//                .build();
-
-//        orderService.saveOrder(order,payment);
 
         return ResponseEntity.ok(approveResponse);
     }
