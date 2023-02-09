@@ -1,5 +1,6 @@
 package mpti.domain.reservation.application;
 
+import lombok.extern.slf4j.Slf4j;
 import mpti.common.errors.ReservationNotFoundException;
 import mpti.domain.opinion.entity.Review;
 import mpti.domain.reservation.api.request.SchedulingRequest;
@@ -24,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
 @SpringBootTest
+@Slf4j
 class ReservationServiceTest {
 
     @Autowired
@@ -120,6 +122,8 @@ class ReservationServiceTest {
                         .day(2)
                         .openHours(openHours)
                         .build());
+
+        log.info("zzzzzz");
 
         assertThatThrownBy(() -> reservationRepository.findById(savedReservation.getId()).orElseThrow(() -> new ReservationNotFoundException(savedReservation.getId())))
                 .isInstanceOf(ReservationNotFoundException.class);

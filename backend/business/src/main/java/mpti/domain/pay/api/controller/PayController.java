@@ -1,5 +1,6 @@
 package mpti.domain.pay.api.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import mpti.domain.pay.application.KakaoPayService;
 import mpti.domain.pay.api.response.ApproveResponse;
 import mpti.domain.pay.api.response.ReadyResponse;
