@@ -35,7 +35,7 @@ public class ReservationController {
     @GetMapping ("/list/{page}")
     public ResponseEntity<Page<GetReservationResponse>> getReservationList(@PathVariable int page) {
 
-        Page<GetReservationResponse> getReservationResponseList = reservationService.getReservationList(page, 5, "id");
+        Page<GetReservationResponse> getReservationResponseList = reservationService.getReservationList(page, 20, "id");
 
         return ResponseEntity.ok(getReservationResponseList);
     }
@@ -51,7 +51,7 @@ public class ReservationController {
             @PathVariable("day") int day,
             @PathVariable int page){
 
-        Page<GetReservationResponse> getReservationResponseList = reservationService.getReservationListByTrainerIdAndYearAndMonthAndDay(trainerId, year, month, day, page, 5, "id");
+        Page<GetReservationResponse> getReservationResponseList = reservationService.getReservationListByTrainerIdAndYearAndMonthAndDay(trainerId, year, month, day, page, 20, "id");
 
         return ResponseEntity.ok(getReservationResponseList);
     }
