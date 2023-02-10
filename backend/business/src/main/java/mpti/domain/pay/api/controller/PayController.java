@@ -1,6 +1,7 @@
 package mpti.domain.pay.api.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import mpti.domain.pay.api.request.PayCompletedRequest;
 import mpti.domain.pay.api.request.PayReadyRequest;
 import mpti.domain.pay.application.KakaoPayService;
 import mpti.domain.pay.api.response.ApproveResponse;
@@ -36,16 +37,16 @@ public class PayController {
     }
 
     // 결제승인요청
-    @GetMapping("/order/completed/{pg_token}")
-    public ResponseEntity<ApproveResponse> payCompleted(@PathVariable("pg_token") String pgToken) {
+    @PostMapping("/order/completed")
+    public ResponseEntity<ApproveResponse> payCompleted(@RequestBody PayCompletedRequest payCompletedRequest) {
 
         log.info("order/completed start");
 
-        log.info("pgToken = {}", pgToken);
+        log.info("pgToken = {}", payCompletedRequest.getPgToken());
         log.info("tid = {}", tid);
 
         // 카카오 결재 요청하기
-        ApproveResponse approveResponse = kakaopayService.payApprove(tid, pgToken);
+        ApproveResponse approveResponse = kakaopayService.payApprove(tid, payCompletedRequest.getPgToken());
 
         return ResponseEntity.ok(approveResponse);
     }
