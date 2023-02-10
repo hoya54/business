@@ -21,5 +21,5 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     Page<Reservation> findAllPageByTrainerIdAndYearAndMonthAndDay(Long trainerId, int year, int month, int day, PageRequest pageRequest);
 
-    List<Reservation> findAllByTrainerIdA(Long trainerId);
+    List<Reservation> findAllByTrainerId(Long trainerId);
 }
