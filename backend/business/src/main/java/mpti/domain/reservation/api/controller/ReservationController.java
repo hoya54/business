@@ -120,10 +120,13 @@ public class ReservationController {
         return ResponseEntity.ok(getReservationResponseList);
     }
 
+
+    //    [GET] 트레이너가 본인을 예약한 유저와 스케줄 조회
+
     @GetMapping("/trainer/list/{trainerId}")
     public ResponseEntity<List<GetReservationResponse>> getReservationByTrainerId(@PathVariable Long trainerId){
 
-        List<GetReservationResponse> getReservationResponseList = reservationService.getReservationListByTrainerId(trainerId);
+        List<GetReservationResponse> getReservationResponseList = reservationService.getReservedReservationListByTrainerId(trainerId);
 
         return ResponseEntity.ok(getReservationResponseList);
     }
