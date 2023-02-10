@@ -41,18 +41,6 @@ public class ReservationController {
     }
 
 
-    // [GET] 특정 트레이너의 모든 예약 리스트 반환
-
-    @GetMapping ("/trainer/reserved/list/{trainerId}")
-    public ResponseEntity<List<GetReservationResponse>> getReservedReservationListByTrainerId(
-            @PathVariable("trainerId") Long trainerId){
-
-        List<GetReservationResponse> getReservationResponseList = reservationService.getReservedReservationListByTrainerId(trainerId);
-
-        return ResponseEntity.ok(getReservationResponseList);
-    }
-
-
     // [GET] 특정 트레이너의 특정 날짜의 예약 리스트를 반환
 
     @GetMapping ("/list/{trainerId}/{year}/{month}/{day}")
@@ -151,12 +139,24 @@ public class ReservationController {
 
     //    [GET] 트레이너가 본인을 예약한 유저와 스케줄 조회
 
-    @GetMapping("/trainer/list/{trainerId}")
-    public ResponseEntity<List<GetReservationResponse>> getReservationByTrainerId(@PathVariable Long trainerId){
+    @GetMapping("/trainer/reserved/list/{trainerId}")
+    public ResponseEntity<List<GetReservationResponse>> getReservedReservationByTrainerId(@PathVariable Long trainerId){
 
-        List<GetReservationResponse> getReservationResponseList = reservationService.getReservedReservationListByTrainerId(trainerId);
+        List<GetReservationResponse> getReservationResponseList = reservationService.getReservedReservationListByTrainerIdAndUserIdIsNotNull(trainerId);
 
         return ResponseEntity.ok(getReservationResponseList);
     }
+
+    //    [GET] 특정 트레이너의 모든 스케쥴 조회
+
+    @GetMapping("/trainer/reserved/list/{trainerId}")
+    public ResponseEntity<List<GetReservationResponse>> getReservationByTrainerId(@PathVariable Long trainerId){
+
+        List<GetReservationResponse> getReservationResponseList = reservationService.getReservationListByTrainerId(trainerId);
+
+        return ResponseEntity.ok(getReservationResponseList);
+    }
+
+
 
 }

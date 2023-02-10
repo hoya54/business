@@ -203,11 +203,11 @@ public class ReservationService {
         return getReservationResponseList;
     }
 
-    public List<GetReservationResponse> getReservedReservationListByTrainerId(Long trainerId) {
+    public List<GetReservationResponse> getReservedReservationListByTrainerIdAndUserIdIsNotNull(Long trainerId) {
 
-        List<Reservation> reservationByTrainerId = reservationRepository.findAllByTrainerIdAndUserIdIsNotNull(trainerId);
+        List<Reservation> reservedReservationByTrainerId = reservationRepository.findAllByTrainerIdAndUserIdIsNotNull(trainerId);
 
-        List<GetReservationResponse> getReservationResponseList = reservationByTrainerId.stream()
+        List<GetReservationResponse> getReservationResponseList = reservedReservationByTrainerId.stream()
                 .map((reservation) -> new GetReservationResponse(reservation))
                 .collect(Collectors.toList());
 
@@ -215,4 +215,14 @@ public class ReservationService {
     }
 
 
+    public List<GetReservationResponse> getReservationListByTrainerId(Long trainerId) {
+
+        List<Reservation> reservationByTrainerId = reservationRepository.findAllByTrainerIdA(trainerId);
+
+        List<GetReservationResponse> getReservationResponseList = reservationByTrainerId.stream()
+                .map((reservation) -> new GetReservationResponse(reservation))
+                .collect(Collectors.toList());
+
+        return getReservationResponseList;
+    }
 }
