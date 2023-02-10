@@ -40,8 +40,20 @@ public class ReservationController {
         return ResponseEntity.ok(getReservationResponseList);
     }
 
+
+    // [GET] 특정 트레이너의 모든 예약 리스트 반환
+
+    @GetMapping ("/trainer/reserved/list/{trainerId}")
+    public ResponseEntity<List<GetReservationResponse>> getReservedReservationListByTrainerId(
+            @PathVariable("trainerId") Long trainerId){
+
+        List<GetReservationResponse> getReservationResponseList = reservationService.getReservedReservationListByTrainerId(trainerId);
+
+        return ResponseEntity.ok(getReservationResponseList);
+    }
+
+
     // [GET] 특정 트레이너의 특정 날짜의 예약 리스트를 반환
-    // Pageable
 
     @GetMapping ("/list/{trainerId}/{year}/{month}/{day}")
     public ResponseEntity<List<GetReservationResponse>> getReservationListByTrainerIdAndYearAndMonthAndDay(
@@ -54,6 +66,9 @@ public class ReservationController {
 
         return ResponseEntity.ok(getReservationResponseList);
     }
+
+    // [GET] 특정 트레이너의 특정 날짜의 예약 페이징 반환
+    // Pageable
 
     @GetMapping ("/page/{trainerId}/{year}/{month}/{day}/{page}")
     public ResponseEntity<Page<GetReservationResponse>> getReservationPageByTrainerIdAndYearAndMonthAndDay(
