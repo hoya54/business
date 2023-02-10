@@ -58,6 +58,17 @@ public class ReservationService {
         return getReservationResponseList;
     }
 
+    public Page<GetReservationResponse> getReservationLPageByTrainerIdAndYearAndMonthAndDay(Long trainerId, int year, int month, int day, int page, int size, String orderType) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderType));
+
+        Page<Reservation> reservationList = reservationRepository.findAllPageByTrainerIdAndYearAndMonthAndDay(trainerId, year, month, day, pageRequest);
+
+        Page<GetReservationResponse> getReservationResponseList = reservationList
+                .map((reservation) -> new GetReservationResponse(reservation));
+//                .collect(Collectors.toList());
+        return getReservationResponseList;
+    }
+
     public Reservation get(Long id){
         return reservationRepository.findById(id).orElseThrow(() ->new ReservationNotFoundException(id));
     }
@@ -202,4 +213,6 @@ public class ReservationService {
 
         return getReservationResponseList;
     }
+
+
 }

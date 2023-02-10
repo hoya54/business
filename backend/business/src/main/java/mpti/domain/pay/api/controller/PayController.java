@@ -1,6 +1,7 @@
 package mpti.domain.pay.api.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import mpti.domain.pay.api.request.PayReadyRequest;
 import mpti.domain.pay.application.KakaoPayService;
 import mpti.domain.pay.api.response.ApproveResponse;
 import mpti.domain.pay.api.response.ReadyResponse;
@@ -22,13 +23,13 @@ public class PayController {
     private String tid;
 
     // 카카오페이결제 요청
-    @GetMapping("/order/request")
-    public ResponseEntity<ReadyResponse> payReady(@RequestParam(name = "total_amount") int totalAmount) throws IOException {
+    @PostMapping("/order/request")
+    public ResponseEntity<ReadyResponse> payReady(@RequestBody PayReadyRequest payReadyRequest)  throws IOException {
 
         log.info("order/pay start");
 
         // 카카오 결제 준비하기	- 결제요청 service 실행.
-        ReadyResponse readyResponse = kakaopayService.payReady(totalAmount);
+        ReadyResponse readyResponse = kakaopayService.payReady(payReadyRequest.getTotalAmount());
         tid = readyResponse.getTid();
 
         return ResponseEntity.ok(readyResponse); // 클라이언트에 보냄.(tid,next_redirect_pc_url이 담겨있음.)

@@ -55,6 +55,19 @@ public class ReservationController {
         return ResponseEntity.ok(getReservationResponseList);
     }
 
+    @GetMapping ("/page/{trainerId}/{year}/{month}/{day}/{page}")
+    public ResponseEntity<Page<GetReservationResponse>> getReservationPageByTrainerIdAndYearAndMonthAndDay(
+            @PathVariable("trainerId") Long trainerId,
+            @PathVariable("year") int year,
+            @PathVariable("month") int month,
+            @PathVariable("day") int day,
+            @PathVariable int page){
+
+        Page<GetReservationResponse> getReservationResponseList = reservationService.getReservationLPageByTrainerIdAndYearAndMonthAndDay(trainerId, year, month, day, page, 7, "id");
+
+        return ResponseEntity.ok(getReservationResponseList);
+    }
+
 
     // [POST] 회원이 열려있는 예약중 특정한 하나를 예약
     // 예외(O) : 이미 예약된 스케쥴에 예약을 시도한 경우
