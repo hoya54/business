@@ -110,5 +110,15 @@ public class ReservationController {
         return ResponseEntity.ok(new GetReservationResponse(reservation));
     }
 
+    //    [GET] 예약 상세보기
+
+    @GetMapping("/user/list/{userId}")
+    public ResponseEntity<List<GetReservationResponse>> getReservationByUserId(@PathVariable Long userId){
+
+        List<GetReservationResponse> getReservationResponseList = reservationService.getReservationListByUserId(userId);
+
+        return ResponseEntity.ok(getReservationResponseList);
+    }
+
 
 }

@@ -181,4 +181,14 @@ public class ReservationService {
 
         return getIdListResponseSet;
     }
+
+    public List<GetReservationResponse> getReservationListByUserId(Long userId) {
+
+        List<Reservation> reservationByUserId = reservationRepository.findAllByUserId(userId);
+
+        List<GetReservationResponse> getReservationResponseList = reservationByUserId.stream()
+                .map((reservation) -> new GetReservationResponse(reservation))
+                .collect(Collectors.toList());
+        return getReservationResponseList;
+    }
 }
