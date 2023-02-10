@@ -37,26 +37,24 @@ public class ReservationService {
     private OkHttpClient client = new OkHttpClient();
     private final Gson gson;
 
-    public Page<GetReservationResponse> getReservationList(int page, int size, String orderType) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderType));
+    public List<GetReservationResponse> getReservationList() {
 
-        Page<Reservation> reservationList = reservationRepository.findAll(pageRequest);
+        List<Reservation> reservationList = reservationRepository.findAll();
 
 
-        Page<GetReservationResponse> getReservationResponseList = reservationList
-                .map((reservation) -> new GetReservationResponse(reservation));
-//                .collect(Collectors.toList());
+        List<GetReservationResponse> getReservationResponseList = reservationList.stream()
+                .map((reservation) -> new GetReservationResponse(reservation))
+                .collect(Collectors.toList());
         return getReservationResponseList;
     }
 
-    public Page<GetReservationResponse> getReservationListByTrainerIdAndYearAndMonthAndDay(Long trainerId, int year, int month, int day, int page, int size, String orderType) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderType));
+    public List<GetReservationResponse> getReservationListByTrainerIdAndYearAndMonthAndDay(Long trainerId, int year, int month, int day) {
 
-        Page<Reservation> reservationList = reservationRepository.findAllPageByTrainerIdAndYearAndMonthAndDay(trainerId, year, month, day, pageRequest);
+        List<Reservation> reservationList = reservationRepository.findAllByTrainerIdAndYearAndMonthAndDay(trainerId, year, month, day);
 
-        Page<GetReservationResponse> getReservationResponseList = reservationList
-                .map((reservation) -> new GetReservationResponse(reservation));
-//                .collect(Collectors.toList());
+        List<GetReservationResponse> getReservationResponseList = reservationList.stream()
+                .map((reservation) -> new GetReservationResponse(reservation))
+                .collect(Collectors.toList());
         return getReservationResponseList;
     }
 

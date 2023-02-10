@@ -32,10 +32,10 @@ public class ReservationController {
     // [GET] 현재 모든 예약(예약가능 + 예약 완료) 리스트 반환
     // Pageable
 
-    @GetMapping ("/list/{page}")
-    public ResponseEntity<Page<GetReservationResponse>> getReservationList(@PathVariable int page) {
+    @GetMapping ("/list")
+    public ResponseEntity<List<GetReservationResponse>> getReservationList() {
 
-        Page<GetReservationResponse> getReservationResponseList = reservationService.getReservationList(page, 1000, "id");
+        List<GetReservationResponse> getReservationResponseList = reservationService.getReservationList();
 
         return ResponseEntity.ok(getReservationResponseList);
     }
@@ -43,15 +43,14 @@ public class ReservationController {
     // [GET] 특정 트레이너의 특정 날짜의 예약 리스트를 반환
     // Pageable
 
-    @GetMapping ("/list/{trainerId}/{year}/{month}/{day}/{page}")
-    public ResponseEntity<Page<GetReservationResponse>> getReservationListByTrainerIdAndYearAndMonthAndDay(
+    @GetMapping ("/list/{trainerId}/{year}/{month}/{day}")
+    public ResponseEntity<List<GetReservationResponse>> getReservationListByTrainerIdAndYearAndMonthAndDay(
             @PathVariable("trainerId") Long trainerId,
             @PathVariable("year") int year,
             @PathVariable("month") int month,
-            @PathVariable("day") int day,
-            @PathVariable int page){
+            @PathVariable("day") int day){
 
-        Page<GetReservationResponse> getReservationResponseList = reservationService.getReservationListByTrainerIdAndYearAndMonthAndDay(trainerId, year, month, day, page, 1000, "id");
+        List<GetReservationResponse> getReservationResponseList = reservationService.getReservationListByTrainerIdAndYearAndMonthAndDay(trainerId, year, month, day);
 
         return ResponseEntity.ok(getReservationResponseList);
     }
