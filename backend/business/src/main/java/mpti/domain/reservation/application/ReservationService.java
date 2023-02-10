@@ -195,7 +195,7 @@ public class ReservationService {
 
     public List<GetReservationResponse> getReservationListByUserId(Long userId) {
 
-        List<Reservation> reservationByUserId = reservationRepository.findAllByUserId(userId);
+        List<Reservation> reservationByUserId = reservationRepository.findByUserId(userId);
 
         List<GetReservationResponse> getReservationResponseList = reservationByUserId.stream()
                 .map((reservation) -> new GetReservationResponse(reservation))
@@ -217,7 +217,7 @@ public class ReservationService {
 
     public List<GetReservationResponse> getReservationListByTrainerId(Long trainerId) {
 
-        List<Reservation> reservationByTrainerId = reservationRepository.findAllByTrainerId(trainerId);
+        List<Reservation> reservationByTrainerId = reservationRepository.findByTrainerId(trainerId);
 
         List<GetReservationResponse> getReservationResponseList = reservationByTrainerId.stream()
                 .map((reservation) -> new GetReservationResponse(reservation))

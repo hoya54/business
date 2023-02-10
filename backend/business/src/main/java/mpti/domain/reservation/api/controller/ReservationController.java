@@ -149,7 +149,7 @@ public class ReservationController {
 
     //    [GET] 특정 트레이너의 모든 스케쥴 조회
 
-    @GetMapping("/trainer/reserved/list/{trainerId}")
+    @GetMapping("/trainer/list/{trainerId}")
     public ResponseEntity<List<GetReservationResponse>> getReservationByTrainerId(@PathVariable Long trainerId){
 
         List<GetReservationResponse> getReservationResponseList = reservationService.getReservationListByTrainerId(trainerId);

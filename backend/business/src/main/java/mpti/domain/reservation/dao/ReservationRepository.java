@@ -15,11 +15,11 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     List<Reservation> findByTrainerId(Long trainerId);
 
-    List<Reservation> findAllByUserId(Long userId);
+//    List<Reservation> findAllByUserId(Long userId);
 
     List<Reservation> findAllByTrainerIdAndUserIdIsNotNull(Long trainerId);
 
     Page<Reservation> findAllPageByTrainerIdAndYearAndMonthAndDay(Long trainerId, int year, int month, int day, PageRequest pageRequest);
 
-    List<Reservation> findAllByTrainerId(Long trainerId);
+//    List<Reservation> findAllByTrainerId(Long trainerId);
 }
