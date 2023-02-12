@@ -2,10 +2,12 @@ package mpti.domain.reservation.api.request;
 
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 public class MakeReservationRequest {
 
-    private Long id;
+    private List<Long> idList;
 
     private Long userId;
 

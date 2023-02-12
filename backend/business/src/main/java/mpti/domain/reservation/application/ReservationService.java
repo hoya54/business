@@ -73,17 +73,25 @@ public class ReservationService {
         return reservationRepository.findById(id).orElseThrow(() ->new ReservationNotFoundException(id));
     }
 
-    public Optional<ReservationDto> makeReservation(MakeReservationRequest makeReservationRequest) throws IOException {
-        Reservation reservation = get(makeReservationRequest.getId());
+    public List<Long> makeReservation(MakeReservationRequest makeReservationRequest) throws IOException {
 
-        // 기존에 예약되지 않는 스케줄만 예약 가능
-        if(reservation.getUserId() == null){
-            reservation.reserve(makeReservationRequest.getUserId(), makeReservationRequest.getUserName());    /// getUserName으로 변경 필요
-            ReservationDto reservationDto = new ReservationDto(reservation);
-            return Optional.of(reservationDto);
-        }else{
-            throw new AlreadyReservedException(makeReservationRequest.getId());
+        List<Reservation> reservationList = reservationRepository.findByIdIn(makeReservationRequest.getIdList());
+
+        List<Long> reservedReservationIdList = new ArrayList<>();
+
+        for(Reservation reservation : reservationList){
+            // 기존에 예약되지 않는 스케줄만 예약 가능
+            if(reservation.getUserId() == null){
+                reservation.reserve(makeReservationRequest.getUserId(), makeReservationRequest.getUserName());    /// getUserName으로 변경 필요
+                reservedReservationIdList.add(reservation.getId());
+
+            }else{
+                throw new AlreadyReservedException(reservation.getId());
+            }
         }
+
+        return reservedReservationIdList;
+
     }
 
     public Optional<CancelReservationResponse> cancelReservation(CancelRequest cancelRequest){

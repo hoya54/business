@@ -11,6 +11,7 @@ import mpti.domain.reservation.api.response.GetReservationResponse;
 import mpti.domain.reservation.api.response.GetIdSetResponse;
 import mpti.domain.reservation.api.response.MakeReservationResponse;
 import mpti.domain.reservation.application.ReservationService;
+import mpti.domain.reservation.dto.ReservationDto;
 import mpti.domain.reservation.entity.Reservation;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -78,9 +79,9 @@ public class ReservationController {
     @PostMapping("/reserve")
     public ResponseEntity<Optional<MakeReservationResponse>> makeReservation(@RequestBody MakeReservationRequest makeReservationRequest) throws IOException {
 
-        Long id = reservationService.makeReservation(makeReservationRequest).orElseThrow(() -> new AlreadyReservedException(makeReservationRequest.getId())).getId();
+        List<Long> reservationDtoList = reservationService.makeReservation(makeReservationRequest);
 
-        return ResponseEntity.ok(Optional.of(new MakeReservationResponse(id)));
+        return ResponseEntity.ok(Optional.of(new MakeReservationResponse(reservationDtoList)));
     }
 
 
