@@ -8,9 +8,9 @@ public class CreateReportRequest {
 
     private Long writerId;
 
-    private Long targetId;
-
     private String writerName;
+
+    private Long targetId;
 
     private String targetName;
 
