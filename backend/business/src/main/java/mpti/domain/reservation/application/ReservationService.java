@@ -8,11 +8,13 @@ import mpti.common.errors.ServerCommunicationException;
 import mpti.domain.reservation.api.request.*;
 import mpti.domain.opinion.entity.Role;
 import mpti.domain.reservation.api.response.CancelReservationResponse;
+import mpti.domain.reservation.api.response.GetAvailableReservationListByDateResponse;
 import mpti.domain.reservation.api.response.GetReservationResponse;
 import mpti.domain.reservation.api.response.GetIdSetResponse;
 
 import mpti.domain.reservation.dao.ReservationRepository;
 import mpti.domain.reservation.dto.ReservationDto;
+import mpti.domain.reservation.dto.YearMonthDayDto;
 import mpti.domain.reservation.entity.Reservation;
 import okhttp3.*;
 
@@ -232,5 +234,21 @@ public class ReservationService {
                 .collect(Collectors.toList());
 
         return getReservationResponseList;
+    }
+
+    public List<GetAvailableReservationListByDateResponse> getAvailableReservationListByDate(String requestBody) {
+
+        YearMonthDayDto yearMonthDayDto = gson.fromJson(requestBody, YearMonthDayDto.class);
+
+        List<Long> reservationList = reservationRepository.findtrainerList(yearMonthDayDto.getYear(), yearMonthDayDto.getMonth(), yearMonthDayDto.getDay());
+
+
+        List<GetAvailableReservationListByDateResponse> trainerList = new ArrayList<>();
+
+        for (Long trainer_id : reservationList){
+            trainerList.add(new GetAvailableReservationListByDateResponse(trainer_id));
+        }
+
+        return trainerList;
     }
 }
