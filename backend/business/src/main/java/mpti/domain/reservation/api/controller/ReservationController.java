@@ -177,7 +177,7 @@ public class ReservationController {
 
         List<GetAvailableReservationListByDateResponse> getReservationResponseList = reservationService.getAvailableReservationListByDate(requestBody);
 
-        
+
         return ResponseEntity.ok(getReservationResponseList);
     }
 

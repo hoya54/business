@@ -24,7 +24,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     List<Reservation> findByIdIn(List<Long> idList);
 
-    @Query(value = "select distinct trainer_id from reservation r where r.year= ?1 and r.month = ?2 and r.day = ?3", nativeQuery = true)
+    @Query(value = "select distinct trainer_id from reservation r where r.year= ?1 and r.month = ?2 and r.day = ?3 and r.user_id is null", nativeQuery = true)
     List<Long> findtrainerList(int year, int month, int day);
 
 //    List<Reservation> findAllByTrainerId(Long trainerId);
