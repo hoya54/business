@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -25,8 +26,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     List<Reservation> findByIdIn(List<Long> idList);
 
-    @Query(value = "select distinct trainer_id from reservation r where r.year= ?1 and r.month = ?2 and r.day = ?3", nativeQuery = true)
-    List<Long> findtrainerList(int year, int month, int day);
+    @Query("select distinct r.trainerId from Reservation r where r.year= :year and r.month = :month and r.day = :day")
+    List<Long> findtrainerList(@Param("year") int year, @Param("month") int month, @Param("day") int day);
 
 //    List<Reservation> findAllByTrainerId(Long trainerId);
 }
