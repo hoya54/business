@@ -1,8 +1,10 @@
 package mpti.domain.reservation.application;
 
 import com.google.gson.Gson;
+import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import mpti.common.errors.AlreadyReservedException;
+import mpti.common.errors.IsNotSendersReservationException;
 import mpti.common.errors.ReservationNotFoundException;
 import mpti.common.errors.ServerCommunicationException;
 import mpti.domain.opinion.dto.ReviewDto;
@@ -11,6 +13,8 @@ import mpti.domain.opinion.entity.Role;
 import mpti.domain.reservation.api.response.*;
 
 import mpti.domain.reservation.dao.ReservationRepository;
+import mpti.domain.reservation.dao.querydsl.ReservationQueryRepository;
+import mpti.domain.reservation.dto.IdNameDto;
 import mpti.domain.reservation.dto.YearMonthDayDto;
 import mpti.domain.reservation.entity.Reservation;
 import okhttp3.*;
@@ -32,6 +36,8 @@ import java.util.stream.Collectors;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
+
+    private final ReservationQueryRepository reservationQueryRepository;
 
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     private OkHttpClient client = new OkHttpClient();
@@ -105,10 +111,9 @@ public class ReservationService {
             reservation.cancel();
             return Optional.of(new CancelReservationResponse(reservation));
         }else{
-
+            throw new IsNotSendersReservationException(reservation.getId());
         }
 
-        return Optional.of(new CancelReservationResponse());
     }
 
     public void deleteReservation(Reservation reservation){
@@ -214,30 +219,38 @@ public class ReservationService {
 
     public Set<GetIdSetResponse> getIdSet(Long id, Role role) {
 
-        List<Reservation> reservations;
+//        List<Reservation> reservations;
+        List<IdNameDto> idNameDtoList;
         Set<GetIdSetResponse> getIdListResponseSet = new HashSet<>();
 
-
-
-        if(role.equals(Role.USER)){
-            reservations = reservationRepository.findByUserIdOrderByYearAscMonthAscDayAscHourAsc(id);
-            for(Reservation reservation : reservations){
-                Long trainerId = reservation.getTrainerId();
-                String trainerName = reservation.getTrainerName();
-                if(trainerId != null){
-                    getIdListResponseSet.add(new GetIdSetResponse(trainerId, trainerName));
-                }
-            }
-        }else {
-            reservations = reservationRepository.findByTrainerId(id);
-            for(Reservation reservation : reservations){
-                Long userId = reservation.getUserId();
-                String userName = reservation.getUserName();
-                if(userId != null){
-                    getIdListResponseSet.add(new GetIdSetResponse(userId, userName));
-                }
+        idNameDtoList = reservationQueryRepository.findDistinctIdListByTrainerIdOrUserIdByRole(id, role);
+        for(IdNameDto idNameDto : idNameDtoList){
+            Long idNameDtoId = idNameDto.getId();
+            String idNameDtoName = idNameDto.getName();
+            if(idNameDtoId != null){
+                getIdListResponseSet.add(new GetIdSetResponse(idNameDtoId, idNameDtoName));
             }
         }
+
+//        if(role.equals(Role.USER)){
+//            reservations = reservationRepository.findByUserId(id);
+//            for(Reservation reservation : reservations){
+//                Long trainerId = reservation.getTrainerId();
+//                String trainerName = reservation.getTrainerName();
+//                if(trainerId != null){
+//                    getIdListResponseSet.add(new GetIdSetResponse(trainerId, trainerName));
+//                }
+//            }
+//        }else {
+//            reservations = reservationRepository.findByTrainerId(id);
+//            for(Reservation reservation : reservations){
+//                Long userId = reservation.getUserId();
+//                String userName = reservation.getUserName();
+//                if(userId != null){
+//                    getIdListResponseSet.add(new GetIdSetResponse(userId, userName));
+//                }
+//            }
+//        }
 
         return getIdListResponseSet;
     }
