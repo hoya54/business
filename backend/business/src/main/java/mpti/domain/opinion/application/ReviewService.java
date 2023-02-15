@@ -43,7 +43,7 @@ public class ReviewService {
     public Page<GetReviewResponse> getReviewList(int page, int size, String orderType) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderType));
 
-        Page<Review> reviewList = reviewRepository.findAll(pageRequest);
+        Page<Review> reviewList = reviewRepository.findAllByOrderByStarDesc(pageRequest);
 
         Page<GetReviewResponse> getReviewResponse = reviewList
                 .map((review) -> new GetReviewResponse(review));
@@ -86,7 +86,7 @@ public class ReviewService {
         Optional<Review> SavedReview = Optional.of(reviewRepository.save(review));
 
 
-        Double averageStarByTrainerId = reviewRepository.findAverageStarByTrainerId(createReviewRequest.getTargetId());
+        int averageStarByTrainerId = reviewRepository.findAverageStarByTrainerId(createReviewRequest.getTargetId());
 
 
         UpdateStarRequest updateStarRequest = new UpdateStarRequest(createReviewRequest.getTargetId(), averageStarByTrainerId);

@@ -18,5 +18,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Page<Review> findAllByTargetId(Long trainerId, PageRequest pageRequest);
 
     @Query(value = "select ROUND(AVG(o.star)) from opinion o where o.target_id = ?1", nativeQuery = true)
-    Double findAverageStarByTrainerId(Long targetId);
+    int findAverageStarByTrainerId(Long targetId);
+
+    Page<Review> findAllByOrderByStarDesc(PageRequest pageRequest);
 }
