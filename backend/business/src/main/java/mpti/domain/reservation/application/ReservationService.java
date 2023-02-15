@@ -4,18 +4,18 @@ import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import mpti.common.errors.AlreadyReservedException;
 import mpti.common.errors.ReservationNotFoundException;
+import mpti.common.errors.ServerCommunicationException;
+import mpti.domain.opinion.dto.ReviewDto;
 import mpti.domain.reservation.api.request.*;
 import mpti.domain.opinion.entity.Role;
-import mpti.domain.reservation.api.response.CancelReservationResponse;
-import mpti.domain.reservation.api.response.GetAvailableReservationListByDateResponse;
-import mpti.domain.reservation.api.response.GetReservationResponse;
-import mpti.domain.reservation.api.response.GetIdSetResponse;
+import mpti.domain.reservation.api.response.*;
 
 import mpti.domain.reservation.dao.ReservationRepository;
 import mpti.domain.reservation.dto.YearMonthDayDto;
 import mpti.domain.reservation.entity.Reservation;
 import okhttp3.*;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -36,6 +36,9 @@ public class ReservationService {
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     private OkHttpClient client = new OkHttpClient();
     private final Gson gson;
+
+    @Value("${server_url.getImageUrl}")
+    private String getImageUrl;
 
     public List<GetReservationResponse> getReservationList() {
 
@@ -112,8 +115,44 @@ public class ReservationService {
         reservationRepository.delete(reservation);
     }
 
-    public void openReservation(Reservation reservation) {
-        reservationRepository.save(reservation);
+    public void openReservation(Reservation reservation) throws IOException {
+
+        GetImageUrlRequest getImageUrlRequest = new GetImageUrlRequest(reservation.getTrainerId());
+
+        // DTO를 JSON으로 변환
+        String json = gson.toJson(getImageUrlRequest);
+
+
+        // RequestBody에 JSON 탑재
+        RequestBody body = RequestBody.create(json, JSON);
+
+//        Request request;
+
+        Request request = new Request.Builder()
+                .url(getImageUrl)
+                .post(body)
+                .build();
+
+        // request 요청
+        try (Response response = client.newCall(request).execute()) {
+            // 요청 실패
+            if (!response.isSuccessful()){
+                throw new ServerCommunicationException();
+            }else{
+
+                String st = response.body().string();
+
+                GetImageUrlResponse responseMember = gson.fromJson(st, GetImageUrlResponse.class);
+
+                reservation.setImageUrl(responseMember.getImageUrl());
+
+                reservationRepository.save(reservation);
+            }
+        }
+
+
+
+
     }
 
     public void scheduling(SchedulingRequest schedulingRequest) throws IOException {
