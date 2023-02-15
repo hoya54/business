@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import mpti.common.errors.AlreadyReservedException;
 import mpti.common.errors.ReservationNotFoundException;
-import mpti.common.errors.ServerCommunicationException;
 import mpti.domain.reservation.api.request.*;
 import mpti.domain.opinion.entity.Role;
 import mpti.domain.reservation.api.response.CancelReservationResponse;
@@ -13,7 +12,6 @@ import mpti.domain.reservation.api.response.GetReservationResponse;
 import mpti.domain.reservation.api.response.GetIdSetResponse;
 
 import mpti.domain.reservation.dao.ReservationRepository;
-import mpti.domain.reservation.dto.ReservationDto;
 import mpti.domain.reservation.dto.YearMonthDayDto;
 import mpti.domain.reservation.entity.Reservation;
 import okhttp3.*;
@@ -180,8 +178,10 @@ public class ReservationService {
         List<Reservation> reservations;
         Set<GetIdSetResponse> getIdListResponseSet = new HashSet<>();
 
+
+
         if(role.equals(Role.USER)){
-            reservations = reservationRepository.findByUserId(id);
+            reservations = reservationRepository.findByUserIdOrderByYearAscMonthAscDayAscHourAsc(id);
             for(Reservation reservation : reservations){
                 Long trainerId = reservation.getTrainerId();
                 String trainerName = reservation.getTrainerName();
@@ -205,7 +205,7 @@ public class ReservationService {
 
     public List<GetReservationResponse> getReservationListByUserId(Long userId) {
 
-        List<Reservation> reservationByUserId = reservationRepository.findByUserId(userId);
+        List<Reservation> reservationByUserId = reservationRepository.findByUserIdOrderByYearAscMonthAscDayAscHourAsc(userId);
 
         List<GetReservationResponse> getReservationResponseList = reservationByUserId.stream()
                 .map((reservation) -> new GetReservationResponse(reservation))

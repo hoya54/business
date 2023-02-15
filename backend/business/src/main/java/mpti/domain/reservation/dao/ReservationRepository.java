@@ -3,6 +3,7 @@ package mpti.domain.reservation.dao;
 import mpti.domain.reservation.entity.Reservation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -12,7 +13,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     List<Reservation> findAllByTrainerIdAndYearAndMonthAndDay(Long trainerId, int year, int month, int day);
 
-    List<Reservation> findByUserId(Long userId);
+    List<Reservation> findByUserIdOrderByYearAscMonthAscDayAscHourAsc(Long userId);
 
     List<Reservation> findByTrainerId(Long trainerId);
 
