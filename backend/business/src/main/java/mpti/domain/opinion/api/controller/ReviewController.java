@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -64,7 +65,7 @@ public class ReviewController {
 
     // [GET] 회원이 리뷰 작성
     @PostMapping("/review/write")
-    public ResponseEntity<Optional<CreateReviewResponse>> createReview(@RequestBody  CreateReviewRequest createReviewRequest){
+    public ResponseEntity<Optional<CreateReviewResponse>> createReview(@RequestBody  CreateReviewRequest createReviewRequest) throws IOException {
 
         Long id = reviewService.create(createReviewRequest).getId();
 

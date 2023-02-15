@@ -163,17 +163,7 @@ public class ReservationController {
 //    [POST] 년-월-일로 예약 가능한 트레이너 ID 리스트 조회
 
     @PostMapping("/trainer/available/list")
-    public ResponseEntity<List<GetAvailableReservationListByDateResponse>> getAvailableReservationListByDate(
-            @RequestBody String requestBody
-    ){
-
-
-//     ================ 테스트용=================
-//        YearMonthDayDto temp = new YearMonthDayDto(2023, 2, 24);
-//        String json = gson.toJson(temp);
-//        List<GetAvailableReservationListByDateResponse> getReservationResponseList = reservationService.getAvailableReservationListByDate(json);
-//     ================ 테스트용=================
-
+    public ResponseEntity<List<GetAvailableReservationListByDateResponse>> getAvailableReservationListByDate(@RequestBody String requestBody){
 
         List<GetAvailableReservationListByDateResponse> getReservationResponseList = reservationService.getAvailableReservationListByDate(requestBody);
 

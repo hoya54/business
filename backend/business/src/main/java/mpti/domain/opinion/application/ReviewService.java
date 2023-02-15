@@ -1,18 +1,25 @@
 package mpti.domain.opinion.application;
 
+import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import mpti.common.errors.ReviewNotFoundException;
+import mpti.common.errors.ServerCommunicationException;
 import mpti.domain.opinion.api.request.CreateReviewRequest;
+import mpti.domain.opinion.api.request.UpdateStarRequest;
 import mpti.domain.opinion.api.response.GetReviewResponse;
 import mpti.domain.opinion.dao.ReviewRepository;
 import mpti.domain.opinion.dto.ReviewDto;
 import mpti.domain.opinion.entity.Review;
+import mpti.domain.opinion.entity.Role;
+import okhttp3.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,6 +30,15 @@ import java.util.stream.Collectors;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
+
+    private OkHttpClient client = new OkHttpClient();
+
+    private final Gson gson;
+
+    public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
+
+    @Value("${server_url.sendAverageStar}")
+    private String sendAverageStar;
 
     public Page<GetReviewResponse> getReviewList(int page, int size, String orderType) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderType));
@@ -57,7 +73,7 @@ public class ReviewService {
         return getReviewResponse;
     }
 
-    public ReviewDto create(CreateReviewRequest createReviewRequest) {
+    public ReviewDto create(CreateReviewRequest createReviewRequest) throws IOException {
         Review review = Review.builder()
                 .writerId(createReviewRequest.getWriterId())
                 .writerName(createReviewRequest.getWriterName())
@@ -69,9 +85,39 @@ public class ReviewService {
 
         Optional<Review> SavedReview = Optional.of(reviewRepository.save(review));
 
-        ReviewDto reviewDto = new ReviewDto(SavedReview);
 
-        return reviewDto;
+        Double averageStarByTrainerId = reviewRepository.findAverageStarByTrainerId(createReviewRequest.getTargetId());
+
+
+        UpdateStarRequest updateStarRequest = new UpdateStarRequest(createReviewRequest.getTargetId(), averageStarByTrainerId);
+
+        // DTO를 JSON으로 변환
+        String json = gson.toJson(updateStarRequest);
+
+
+        // RequestBody에 JSON 탑재
+        RequestBody body = RequestBody.create(json, JSON);
+
+//        Request request;
+
+        Request request = new Request.Builder()
+                .url(sendAverageStar)
+                .post(body)
+                .build();
+
+        // request 요청
+        try (Response response = client.newCall(request).execute()) {
+            // 요청 실패
+            if (!response.isSuccessful()){
+                throw new ServerCommunicationException();
+            }else{
+
+                ReviewDto reviewDto = new ReviewDto(SavedReview);
+
+                return reviewDto;
+            }
+        }
+
     }
 
     public Optional<GetReviewResponse> getReview(Long id) {
