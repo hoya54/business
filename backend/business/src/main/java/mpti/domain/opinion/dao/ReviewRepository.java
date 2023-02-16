@@ -21,4 +21,5 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     int findAverageStarByTrainerId(Long targetId);
 
     Page<Review> findAllByOrderByStarDesc(PageRequest pageRequest);
+
 }

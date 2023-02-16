@@ -2,6 +2,7 @@ package mpti.domain.opinion.api.controller;
 
 import lombok.RequiredArgsConstructor;
 import mpti.domain.opinion.api.request.CreateReviewRequest;
+import mpti.domain.opinion.api.request.DeleteReviewRequest;
 import mpti.domain.opinion.api.response.CreateReviewResponse;
 import mpti.domain.opinion.api.response.GetReviewResponse;
 import mpti.domain.opinion.application.ReviewService;
@@ -70,6 +71,15 @@ public class ReviewController {
         Long id = reviewService.create(createReviewRequest).getId();
 
         return ResponseEntity.ok(Optional.of(new CreateReviewResponse(id)));
+    }
+
+    // [POST] 회원 리뷰 삭제
+    @PostMapping("/review/delete")
+    public ResponseEntity<String> deleteReview(@RequestBody DeleteReviewRequest deleteReviewRequest){
+
+        reviewService.delete(deleteReviewRequest);
+
+        return ResponseEntity.ok("삭제 성공");
     }
 
 

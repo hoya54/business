@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import mpti.common.errors.ReviewNotFoundException;
 import mpti.common.errors.ServerCommunicationException;
 import mpti.domain.opinion.api.request.CreateReviewRequest;
+import mpti.domain.opinion.api.request.DeleteReviewRequest;
 import mpti.domain.opinion.api.request.UpdateStarRequest;
 import mpti.domain.opinion.api.response.GetReviewResponse;
 import mpti.domain.opinion.dao.ReviewRepository;
@@ -130,4 +131,9 @@ public class ReviewService {
     }
 
 
+    public void delete(DeleteReviewRequest deleteReviewRequest) {
+        Optional<Review> review = reviewRepository.findById(deleteReviewRequest.getId());
+
+        reviewRepository.delete(review.get());
+    }
 }
