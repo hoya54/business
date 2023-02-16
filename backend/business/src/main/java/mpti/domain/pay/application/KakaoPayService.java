@@ -23,7 +23,7 @@ public class KakaoPayService {
     public ReadyResponse payReady(int totalAmount) throws IOException {
 
         String order_id = "1111";
-        String itemName = "호갱용 PT 1회권";
+        String itemName = "MPTI";
         Integer quantity = 1;
 
 
